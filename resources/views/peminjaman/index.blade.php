@@ -16,7 +16,7 @@
                         Tambah
                     </a>
 
-                    <table class="table table-hover table-bordered table-stripped" id="example2">
+                    <table class="table table-hover table-bordered table-stripped peminjaman_datatable" id="example2">
                         <thead>
                         <tr>
                             <th>No.</th>
@@ -28,26 +28,6 @@
                         </tr>
                         </thead>
                         <tbody>
-                        @php $no =1  @endphp
-                        @foreach($peminjaman as $pm)
-                            <tr>
-                                <td>{{$no+1}}</td>
-                                <td>{{$pm->kode_peminjam}}</td>
-                                <td>{{$pm->kode_buku}}</td>
-                                <td>{{$pm->tanggal_peminjaman}}</td>
-                                <td>{{$pm->tanggal_pengembalian}}</td>
-                                <td>
-                                    <a href="/peminjaman/{{$pm->kode_peminjaman}}/edit" class="btn btn-primary btn-xs">
-                                        Edit
-                                    </a>
-                                    <form action="peminjaman/{{$pm->kode_peminjaman}}" id="delete-form" method="post">
-                                        @method('delete')
-                                        @csrf
-                                        <button type="submit" class="btn btn-danger btn-xs">Hapus</button>
-                                    </form>
-                                </td>
-                            </tr>
-                        @endforeach
                         </tbody>
                     </table>
 
@@ -59,18 +39,21 @@
 
 @push('js')
     
-    <script>
-        $('#example2').DataTable({
-            "responsive": true,
-        });
-
-        function notificationBeforeDelete(event, el) {
-            event.preventDefault();
-            if (confirm('Apakah anda yakin akan menghapus data ? ')) {
-                $("#delete-form").attr('action', $(el).attr('href'));
-                $("#delete-form").submit();
-            }
-        }
-
-    </script>
+<script type="text/javascript">
+  $(function () {
+    var table = $('.peminjaman_datatable').DataTable({
+        processing: true,
+        serverSide: true,
+        ajax: "{{ route('peminjaman.index') }}",
+        columns: [
+            {data: 'kode_peminjaman', name: 'kode_peminjaman'},
+            {data: 'kode_peminjam', name: 'kode_peminjam'},
+            {data: 'kode_buku', name: 'kode_buku'},
+            {data: 'tanggal_peminjaman', name: 'tanggal_peminjaman'},
+            {data: 'tanggal_pengembalian', name: 'tanggal_pengembalian'},
+            {data: 'action', name: 'action', orderable: false, searchable: false},
+        ]
+    });
+  });
+</script>
 @endpush

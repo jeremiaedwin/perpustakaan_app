@@ -23,7 +23,21 @@ Route::resource('users', \App\Http\Controllers\UserController::class)
     ->middleware('auth');
 
     Route::resource('peminjaman', \App\Http\Controllers\PeminjamanController::class);
+    Route::resource('anggota', \App\Http\Controllers\AnggotaController::class);
+Route::get('/home', function() {
+    return view('home');
+})->name('home')->middleware('auth');
+
+Auth::routes();
+
+Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
+
+Auth::routes();
 
 Route::get('/home', function() {
     return view('home');
 })->name('home')->middleware('auth');
+
+Auth::routes();
+
+Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');

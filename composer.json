@@ -12,12 +12,9 @@
         "jeroennoten/laravel-adminlte": "^3.5",
         "laravel/framework": "^8.12",
         "laravel/tinker": "^2.5",
-<<<<<<< HEAD
         "laravel/ui": "^3.2",
+        "mpdf/mpdf": "v8.1.2",
         "yajra/laravel-datatables-oracle": "~9.0"
-=======
-        "laravel/ui": "3.2"
->>>>>>> ae1f2daa366c7564097759eda352eb5755be7cf2
     },
     "require-dev": {
         "facade/ignition": "^2.5",

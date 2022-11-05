@@ -12,6 +12,9 @@ class RekapController extends Controller
     public function makeRekap(){
         $documentFileName = "rekap.pdf";
         $peminjaman = Peminjaman::all();
+        $peminjamanTotal = Peminjaman::all()->count();
+        $peminjamanTelahSelesai = Peminjaman::where('tanggal_pengembalian', '!=','')->count();
+        $peminjamanBelumSelesai = Peminjaman::where('tanggal_pengembalian', '=','')->count();
         $document = new PDF( [
             'mode' => 'utf-8',
             'format' => 'A4',
@@ -26,7 +29,12 @@ class RekapController extends Controller
             'Content-Disposition' => 'inline; filename="'.$documentFileName.'"'
         ];
 
-        $document->WriteHTML($peminjaman);
+        // $document->WriteHTML("Total Peminjaman : $peminjamanTotal");
+        // $document->WriteHTML("Peminjaman telah selesai : $peminjamanTelahSelesai");
+        // $document->WriteHTML("Peminjaman belum selesai : $peminjamanBelumSelesai");
+
+        	
+        $document->WriteHTML(view('rekap.index', compact('peminjaman', 'peminjamanTotal', 'peminjamanTelahSelesai', 'peminjamanBelumSelesai')));
 
         Storage::disk('public')->put($documentFileName, $document->Output($documentFileName, "S"));
         return Storage::disk('public')->download($documentFileName, 'Request', $header); 

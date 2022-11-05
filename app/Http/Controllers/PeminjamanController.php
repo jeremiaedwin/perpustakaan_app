@@ -5,9 +5,12 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\Peminjaman;
 use App\Models\LogPeminjamanSuccess;
+use App\Models\Anggota;
 use Auth;
 use Carbon;
 use DataTables;
+// Import ID generator
+use Haruncpi\LaravelIdGenerator\IdGenerator;
 
 class PeminjamanController extends Controller
 {
@@ -24,11 +27,14 @@ class PeminjamanController extends Controller
                 return Datatables::of($peminjaman)->addIndexColumn()
                     ->addColumn('action', function($peminjaman){
                         
-                        $updateButton = '<a href="/peminjaman/'.$peminjaman->kode_peminjaman.'/edit" class="edit btn btn-primary btn-sm">Edit</a>'  ;
+                        $updateButton = '<form action="peminjaman/'.$peminjaman->kode_peminjaman.'" id="update-form" method="post">
+                                        '. method_field('put') . csrf_field() .'
+                                        <button type="submit" class="btn btn-primary btn-xs">Kembali</button>
+                                        </form>';
                         $deleteButton = '<form action="peminjaman/'.$peminjaman->kode_peminjaman.'" id="delete-form" method="post">
-                                        <input type="hidden" name="_method" value="DELETE">
+                                        '. method_field('delete') . csrf_field() .'
                                         <button type="submit" class="btn btn-danger btn-xs">Hapus</button>
-                    </form>';
+                                        </form>';
                         return $updateButton." ".$deleteButton;
                     })
                     ->rawColumns(['action'])
@@ -55,8 +61,9 @@ class PeminjamanController extends Controller
      */
     public function create()
     {
+        $anggota = Anggota::all();
         try {
-            return view('peminjaman.create');
+            return view('peminjaman.create', compact('anggota'));
         } catch (\Throwable $th) {
             return response()->json([
                 'message' => 'Page Not Found'
@@ -72,7 +79,9 @@ class PeminjamanController extends Controller
      */
     public function store(Request $request)
     {
-        $kode_peminjaman = $request->kode_peminjaman;
+        $id = IdGenerator::generate(['table' => 'peminjaman', 'field'=> 'kode_peminjaman','length' => 6, 'prefix' => 'PM']);
+        
+        $kode_peminjaman = $id;
         $kode_buku = $request->kode_buku;
         $kode_peminjam = $request->kode_peminjam;
         $currentDate = Carbon\Carbon::now();
@@ -88,7 +97,7 @@ class PeminjamanController extends Controller
                 'user_id' => Auth::id(),
                 'activity' => 'Create Data'
             ]);
-            return view('peminjaman.create');
+            return redirect('/peminjaman');
         } catch (Exception $th) {
             return response()->json([
                 'message' => $th
@@ -137,15 +146,15 @@ class PeminjamanController extends Controller
     {
         try {
             $peminjaman = Peminjaman::find($id);
-            $kode_peminjaman = $peminjaman->kode_peminjaman;
-            $peminjaman->tanggal_pengembalian = $request->tanggal_pengembalian;
+            $kode_peminjaman = $id;
+            $peminjaman->tanggal_pengembalian = Carbon\Carbon::now();;
             $peminjaman->save();
             $logging = LogPeminjamanSuccess::create([
                 'kode_peminjaman'=> $kode_peminjaman,
                 'user_id' => Auth::id(),
                 'activity' => 'Update Data'
             ]);
-            return view('peminjaman.edit', compact('peminjaman'));
+            return redirect('/peminjaman');
         } catch (Exception $th) {
             return response()->json([
                 'message' => $th

@@ -14,17 +14,13 @@
                 <div class="card">
                     <div class="card-body">
 
-                    <div class="form-group">
-                            <label for="exampleInputName">Kode Peminjaman</label>
-                            <input type="text" class="form-control @error('kode_peminjaman') is-invalid @enderror" id="exampleInputName" placeholder="kode peminjaman" name="kode_peminjaman" value="{{old('kode_peminjaman')}}">
-                            @error('kode_peminjaman') <span class="text-danger">{{$message}}</span> @enderror
-                        </div>
-
                         <div class="form-group">
                             <label for="">Anggota : </label>
                             <select name="kode_peminjam" id="" class="form-control">
                                 <option value="">Pilih Anggota</option>
-                                <option value="US01">Asep</option>
+                                @foreach($anggota as $anggota)
+                                <option value="{{$anggota->id_anggota}}">{{$anggota->nama_anggota}}</option>
+                                @endforeach
                             </select>
                         </div>
 

@@ -18,4 +18,5 @@ class Peminjaman extends Model
     ];
     protected $primaryKey = 'kode_peminjaman';
     protected $keyType = 'string';
+    public $incrementing = 'false';
 }

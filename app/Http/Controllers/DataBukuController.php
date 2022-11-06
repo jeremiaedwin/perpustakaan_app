@@ -44,7 +44,7 @@ class DataBukuController extends Controller
         $penerbit_buku = $request->penerbit_buku;
         $penulis_buku = $request->penulis_buku;
         $jumlah_stok = $request->jumlah_stok;
-        $jumlah_tersedia = $request->jumlah_tersedia;
+        $jumlah_tersedia = $jumlah_stok;
 
         try {
             $data_buku = DataBuku::create([
@@ -83,9 +83,9 @@ class DataBukuController extends Controller
      */
     public function edit($id)
     {
-        $id_buku = DataBuku::find($id);
+        $data_buku = DataBuku::find($id);
+        
         try{
-            
             return view('data_buku.edit', compact('data_buku'));
         } catch (\Throwable $th){
             return response()->json([
@@ -109,9 +109,9 @@ class DataBukuController extends Controller
             $data_buku->penerbit_buku = $request->penerbit_buku;
             $data_buku->penulis_buku = $request->penulis_buku;
             $data_buku->jumlah_stok = $request->jumlah_stok;
-            $data_buku->jumlah_tersedia = $request->jumlah_tersedia;
+            $data_buku->jumlah_tersedia = $request->jumlah_stok;
             $data_buku->save();
-            return view('anggota.edit', compact('anggota'));
+            return redirect('/data_buku');
         } catch (Exception $th) {
             return response()->json([
                 'message' => $th

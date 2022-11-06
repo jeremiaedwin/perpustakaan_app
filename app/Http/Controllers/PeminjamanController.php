@@ -9,6 +9,7 @@ use App\Models\Anggota;
 use Auth;
 use Carbon;
 use DataTables;
+use Exception;
 // Import ID generator
 use Haruncpi\LaravelIdGenerator\IdGenerator;
 
@@ -22,8 +23,9 @@ class PeminjamanController extends Controller
     public function index(Request $request)
     {
         try {
+            $peminjaman = Peminjaman::all();
             if ($request->ajax()){
-                $peminjaman = Peminjaman::all();
+                
                 return Datatables::of($peminjaman)->addIndexColumn()
                     ->addColumn('action', function($peminjaman){
                         
@@ -46,9 +48,9 @@ class PeminjamanController extends Controller
                 'activity' => 'Get All Data'
             ]);
             return view('peminjaman.index');
-        } catch (\Throwable $th) {
+        } catch (Exception $e) {
             return response()->json([
-                'message' => 'Server Error'
+                'message' => $e->getMessage()
             ], 500);
         }
         
@@ -79,17 +81,21 @@ class PeminjamanController extends Controller
      */
     public function store(Request $request)
     {
+        $validated = $request->validate([
+            'kode_buku' => 'required',
+            'kode_anggota' => 'required'
+        ]);
         $id = IdGenerator::generate(['table' => 'peminjaman', 'field'=> 'kode_peminjaman','length' => 6, 'prefix' => 'PM']);
         
         $kode_peminjaman = $id;
         $kode_buku = $request->kode_buku;
-        $kode_peminjam = $request->kode_peminjam;
+        $kode_anggota = $request->kode_anggota;
         $currentDate = Carbon\Carbon::now();
         try {
             $peminjaman = Peminjaman::create([
                 'kode_peminjaman'=> $kode_peminjaman,
                 'kode_buku'=> $kode_buku,
-                'kode_peminjam'=> $kode_peminjam,
+                'kode_anggota'=> $kode_anggota,
                 'tanggal_peminjaman' => $currentDate
             ]);
             $logging = LogPeminjamanSuccess::create([

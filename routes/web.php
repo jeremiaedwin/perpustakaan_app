@@ -1,7 +1,7 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
-
+use App\Http\Controllers\DataBukuController;
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -24,6 +24,13 @@ Route::resource('users', \App\Http\Controllers\UserController::class)
 
     Route::resource('peminjaman', \App\Http\Controllers\PeminjamanController::class)->middleware('auth');;
     Route::resource('anggota', \App\Http\Controllers\AnggotaController::class);
+    Route::get('/data_buku', [DataBukuController::class, 'index']);
+    Route::get('/data_buku/create', [DataBukuController::class, 'create']);
+    Route::post('/data_buku', [DataBukuController::class, 'store']);
+    Route::get('/data_buku/{id}/edit', [DataBukuController::class, 'edit']);
+    Route::put('/data_buku/{id}', [DataBukuController::class, 'update']);
+    Route::delete('/data_buku/{id}', [DataBukuController::class, 'destroy']);
+
 Route::get('/home', function() {
     return view('home');
 })->name('home')->middleware('auth');

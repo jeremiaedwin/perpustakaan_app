@@ -28,7 +28,9 @@
                             <label for="">Buku : </label>
                             <select name="kode_buku" id="" class="form-control">
                                 <option value="">Pilih Buku</option>
-                                <option value="BK01">Atomic Habbit</option>
+                                @foreach($buku as $buku)
+                                <option value="{{$buku->id_buku}}">{{$buku->judul_buku}}</option>
+                                @endforeach
                             </select>
                         </div>
 

@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use App\Models\Peminjaman;
 use App\Models\LogPeminjamanSuccess;
 use App\Models\Anggota;
+use App\Models\DataBuku;
 use Auth;
 use Carbon;
 use DataTables;
@@ -23,7 +24,9 @@ class PeminjamanController extends Controller
     public function index(Request $request)
     {
         try {
-            $peminjaman = Peminjaman::all();
+            $peminjaman = Anggota::join('transaksi','transaksi.id_anggota', '=', 'anggotas.id_anggota')
+                                    ->join('data_buku', 'transaksi.id_buku', '=', 'data_buku.id_buku')
+                                    ->get();
             if ($request->ajax()){
                 
                 return Datatables::of($peminjaman)->addIndexColumn()
@@ -64,8 +67,9 @@ class PeminjamanController extends Controller
     public function create()
     {
         $anggota = Anggota::all();
+        $buku = DataBuku::all();
         try {
-            return view('peminjaman.create', compact('anggota'));
+            return view('peminjaman.create', compact('anggota', 'buku'));
         } catch (\Throwable $th) {
             return response()->json([
                 'message' => 'Page Not Found'
@@ -81,29 +85,31 @@ class PeminjamanController extends Controller
      */
     public function store(Request $request)
     {
-        $validated = $request->validate([
-            'kode_buku' => 'required',
-            'kode_anggota' => 'required'
-        ]);
         $id = IdGenerator::generate(['table' => 'peminjaman', 'field'=> 'kode_peminjaman','length' => 6, 'prefix' => 'PM']);
         
         $kode_peminjaman = $id;
         $kode_buku = $request->kode_buku;
-        $kode_anggota = $request->kode_anggota;
+        $kode_anggota = $request->kode_peminjam;
         $currentDate = Carbon\Carbon::now();
         try {
-            $peminjaman = Peminjaman::create([
-                'kode_peminjaman'=> $kode_peminjaman,
-                'kode_buku'=> $kode_buku,
-                'kode_anggota'=> $kode_anggota,
-                'tanggal_peminjaman' => $currentDate
-            ]);
-            $logging = LogPeminjamanSuccess::create([
-                'kode_peminjaman'=> $kode_peminjaman,
-                'user_id' => Auth::id(),
-                'activity' => 'Create Data'
-            ]);
-            return redirect('/peminjaman');
+            $buku = DataBuku::find($kode_buku);
+            if($buku->jumlah_tersedia > 0){
+                $peminjaman = Peminjaman::create([
+                    'kode_peminjaman'=> $kode_peminjaman,
+                    'id_buku'=> $kode_buku,
+                    'id_anggota'=> $kode_anggota,
+                    'tanggal_peminjaman' => $currentDate
+                ]);
+                $buku->jumlah_tersedia = $buku->jumlah_tersedia - 1;
+                $buku->save();
+                $logging = LogPeminjamanSuccess::create([
+                    'kode_peminjaman'=> $kode_peminjaman,
+                    'user_id' => Auth::id(),
+                    'activity' => 'Create Data'
+                ]);
+                return redirect('/peminjaman'); 
+            }
+            
         } catch (Exception $th) {
             return response()->json([
                 'message' => $th
@@ -155,6 +161,9 @@ class PeminjamanController extends Controller
             $kode_peminjaman = $id;
             $peminjaman->tanggal_pengembalian = Carbon\Carbon::now();;
             $peminjaman->save();
+            $buku = DataBuku::find($peminjaman->id_buku);
+            $buku->jumlah_tersedia = $buku->jumlah_tersedia + 1;
+            $buku->save();
             $logging = LogPeminjamanSuccess::create([
                 'kode_peminjaman'=> $kode_peminjaman,
                 'user_id' => Auth::id(),

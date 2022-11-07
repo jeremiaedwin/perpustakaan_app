@@ -47,8 +47,8 @@
         ajax: "{{ route('peminjaman.index') }}",
         columns: [
             {data: 'kode_peminjaman', name: 'kode_peminjaman'},
-            {data: 'kode_peminjam', name: 'kode_peminjam'},
-            {data: 'kode_buku', name: 'kode_buku'},
+            {data: 'nama_anggota', name: 'nama_anggota'},
+            {data: 'judul_buku', name: 'judul_buku'},
             {data: 'tanggal_peminjaman', name: 'tanggal_peminjaman'},
             {data: 'tanggal_pengembalian', name: 'tanggal_pengembalian'},
             {data: 'action', name: 'action', orderable: false, searchable: false},

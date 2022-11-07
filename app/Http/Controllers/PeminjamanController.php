@@ -6,7 +6,6 @@ use Illuminate\Http\Request;
 use App\Models\Peminjaman;
 use App\Models\LogPeminjamanSuccess;
 use Auth;
-use Carbon;
 use DataTables;
 
 class PeminjamanController extends Controller
@@ -42,7 +41,7 @@ class PeminjamanController extends Controller
             return view('peminjaman.index');
         } catch (\Throwable $th) {
             return response()->json([
-                'message' => 'Server Error'
+                'message' => 'Server Errorr!'
             ], 500);
         }
         

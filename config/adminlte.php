@@ -230,6 +230,16 @@ return [
             'url'  => '/users',
             'icon'  => 'fa fa-users',
         ],
+        [
+            'text' => 'Anggota',
+            'url'  => '/anggota',
+            'icon'  => 'fa fa-users',
+        ],
+        [
+            'text' => 'Peminjaman',
+            'url'  => '/peminjaman',
+            'icon'  => 'fa fa-users',
+        ],
     ],
 
     /*

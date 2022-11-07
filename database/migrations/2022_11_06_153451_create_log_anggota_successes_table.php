@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateAnggotasTable extends Migration
+class CreateLogAnggotaSuccessesTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,11 +13,11 @@ class CreateAnggotasTable extends Migration
      */
     public function up()
     {
-        Schema::create('anggotas', function (Blueprint $table) {
-            $table->string('nis_anggota', 10)->primary();
-            $table->string('nama_anggota');
-            $table->string('alamat_anggota');
-            $table->string('nomor_telepon_anggota');
+        Schema::create('log_anggota_successes', function (Blueprint $table) {
+            $table->id();
+            $table->string('nis_anggota');
+            $table->string('user_id');
+            $table->string('activity');
             $table->timestamps();
         });
     }
@@ -29,6 +29,6 @@ class CreateAnggotasTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('anggotas');
+        Schema::dropIfExists('log_anggota_successes');
     }
 }

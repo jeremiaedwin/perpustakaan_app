@@ -8,6 +8,7 @@ use App\Models\LogAnggotaSuccess;
 use Auth;
 use Carbon;
 use DataTables;
+use Haruncpi\LaravelIdGenerator\IdGenerator;
 
 class AnggotaController extends Controller
 {
@@ -26,10 +27,10 @@ class AnggotaController extends Controller
                     ->addColumn('action', function($anggota){
                         
                         $updateButton = '<a href="/anggota/'.$anggota->nis_anggota.'/edit" class="edit btn btn-primary btn-sm">Edit</a>';
-                        $deleteButton = '<form action="anggota/'.$anggota->nis_anggota.'" id="delete-form" method="post">
-                                        <input type="hidden" name="_method" value="DELETE">
+                        $deleteButton = '<form action="/anggota/'.$anggota->nis_anggota.'" id="delete-form" method="post">
+                                        '. method_field('delete') . csrf_field() .'
                                         <button type="submit" class="btn btn-danger btn-xs">Hapus</button>
-                    </form>';                    
+                                        </form>';
                         return $updateButton." ".$deleteButton;
                     })
                     ->rawColumns(['action'])
@@ -169,12 +170,12 @@ class AnggotaController extends Controller
     {
         try {
             $anggota = Anggota::find($id);
-            $anggota->delete();
-            $logging = LogPeminjamanSuccess::create([
-                'kode_peminjaman'=> $kode_peminjaman,
+            $logging = LogAnggotaSuccess::create([
+                'nis_anggota'=> $anggota->nis_anggota,
                 'user_id' => Auth::id(),
-                'activity' => 'Update Data'
+                'activity' => 'Delete Data'
             ]);
+            $anggota->delete();
             return redirect('/anggota');
         } catch (Extection $th) {
             return response()->json([

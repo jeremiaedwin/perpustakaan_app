@@ -15,6 +15,9 @@
                     <a href="{{route('peminjaman.create')}}" class="btn btn-primary mb-2">
                         Tambah
                     </a>
+                    <a href="/rekap" class="btn btn-primary mb-2">
+                        PDF
+                    </a>
 
                     <table class="table table-hover table-bordered table-stripped peminjaman_datatable" id="example2">
                         <thead>
@@ -23,7 +26,10 @@
                             <th>Nama Peminjam</th>
                             <th>Judul Buku</th>
                             <th>Tanggal Peminjaman</th>
+                            <th>Tenggat Waktu</th>
                             <th>Tanggal Pengembalian</th>
+                            <th>Status</th>
+                            <th>Telat</th>
                             <th>Action</th>
                         </tr>
                         </thead>
@@ -50,7 +56,10 @@
             {data: 'nama_anggota', name: 'nama_anggota'},
             {data: 'judul_buku', name: 'judul_buku'},
             {data: 'tanggal_peminjaman', name: 'tanggal_peminjaman'},
+            {data: 'tenggat_waktu', name: 'tenggat_waktu'},
             {data: 'tanggal_pengembalian', name: 'tanggal_pengembalian'},
+            {data: 'status', name: 'status'},
+            {data: 'telat', name: 'telat'},
             {data: 'action', name: 'action', orderable: false, searchable: false},
         ]
     });

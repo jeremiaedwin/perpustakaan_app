@@ -20,6 +20,7 @@ class CreateTransactionsTable extends Migration
             $table->string('id_buku');
             $table->foreign('id_buku')->references('id_buku')->on('data_buku')->onDelete('cascade');
             $table->date('tanggal_peminjaman');
+            $table->integer('durasi_peminjaman');
             $table->date('tanggal_pengembalian')->nullable();
             
             $table->timestamps();

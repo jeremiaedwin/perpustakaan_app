@@ -8,4 +8,6 @@ use Illuminate\Database\Eloquent\Model;
 class LogPeminjamanError extends Model
 {
     use HasFactory;
+    protected $table ='log_peminjaman_errors';
+    protected $guarded = [];
 }

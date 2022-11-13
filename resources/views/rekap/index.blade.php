@@ -47,15 +47,14 @@
                 <th>Judul Buku</th>
                 <th>Tanggal Peminjaman</th>
                 <th>Tanggal Pengembalian</th>
-                <th>Action</th>
             </tr>
         </thead>
         <tbody>
             @foreach($peminjaman as $pm)
             <tr>
                 <td>{{$pm->kode_peminjaman}}</td>
-                <td>{{$pm->kode_peminjam}}</td>
-                <td>{{$pm->kode_buku}}</td>
+                <td>{{$pm->nama_anggota}}</td>
+                <td>{{$pm->judul_buku}}</td>
                 <td>{{$pm->tanggal_peminjaman}}</td>
                 <td>{{$pm->tanggal_pengembalian}}</td>
             </tr>

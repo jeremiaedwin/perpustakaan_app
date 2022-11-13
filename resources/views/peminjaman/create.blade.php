@@ -33,8 +33,13 @@
                                 @endforeach
                             </select>
                         </div>
-
+                        <div class="form-group">
+                            <label for="">Durasi Peminjaman</label>
+                            <input type="number" name="durasi_peminjaman" class="form-control">
+                        </div>
                     </div>
+
+                    
 
                     <div class="card-footer">
                         <button type="submit" class="btn btn-primary">Simpan</button>

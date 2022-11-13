@@ -76,6 +76,7 @@
 <body class="@yield('classes_body')" @yield('body_data')>
 
     {{-- Body Content --}}
+    @include('sweetalert::alert')
     @yield('body')
 
     {{-- Base Scripts --}}

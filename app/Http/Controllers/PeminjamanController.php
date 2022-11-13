@@ -5,12 +5,14 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\Peminjaman;
 use App\Models\LogPeminjamanSuccess;
+use App\Models\LogPeminjamanError;
 use App\Models\Anggota;
 use App\Models\DataBuku;
 use Auth;
 use Carbon;
 use DataTables;
 use Exception;
+use Alert;
 // Import ID generator
 use Haruncpi\LaravelIdGenerator\IdGenerator;
 
@@ -30,6 +32,27 @@ class PeminjamanController extends Controller
             if ($request->ajax()){
                 
                 return Datatables::of($peminjaman)->addIndexColumn()
+                    ->addColumn('tenggat_waktu', function($peminjaman){
+                        $hari = (string)$peminjaman->durasi_peminjaman;
+                        return date('Y-m-d', strtotime($peminjaman->tanggal_peminjaman. ' + '.$hari.' days'));
+                    })
+                    ->addColumn('telat', function($peminjaman){
+                        $hari = (string)$peminjaman->durasi_peminjaman;
+                        if( date('Y-m-d', strtotime($peminjaman->tanggal_pengembalian. ' + '.$hari.' days')) <= $peminjaman->tanggal_pengembalian && $peminjaman->tanggal_pengembalian != null){
+                            return 'Telat';
+                        }else if($peminjaman->tanggal_pengembalian == null){
+                            return 'Belum dikembalikan';
+                        }else{
+                            return 'Tidak Telat';
+                        }
+                    })
+                    ->addColumn('status', function($peminjaman){
+                        if($peminjaman->tanggal_pengembalian == null){
+                            return 'Belum Kembali';
+                        }else{
+                            return 'Telah Kembali';
+                        }
+                    })
                     ->addColumn('action', function($peminjaman){
                         
                         $updateButton = '<form action="peminjaman/'.$peminjaman->kode_peminjaman.'" id="update-form" method="post">
@@ -42,7 +65,7 @@ class PeminjamanController extends Controller
                                         </form>';
                         return $updateButton." ".$deleteButton;
                     })
-                    ->rawColumns(['action'])
+                    ->rawColumns(['action', 'status', 'tenggat_waktu', 'telat'])
                     ->make(true);
             }
             $logging = LogPeminjamanSuccess::create([
@@ -52,6 +75,12 @@ class PeminjamanController extends Controller
             ]);
             return view('peminjaman.index');
         } catch (Exception $e) {
+            $logging = new LogPeminjamanError;
+            $logging->kode_peminjaman = 'ALL';
+            $logging->user_id = Auth::id();
+            $logging->activity = 'Get All Data';
+            $logging->error_message = $e->getMessage();
+            $logging->save(); 
             return response()->json([
                 'message' => $e->getMessage()
             ], 500);
@@ -66,14 +95,21 @@ class PeminjamanController extends Controller
      */
     public function create()
     {
-        $anggota = Anggota::all();
-        $buku = DataBuku::all();
+        
         try {
+            $anggota = Anggota::all();
+            $buku = DataBuku::all();
             return view('peminjaman.create', compact('anggota', 'buku'));
-        } catch (\Throwable $th) {
+        } catch (Exception $e) {
+            $logging = new LogPeminjamanError;
+            $logging->kode_peminjaman = $kode_peminjaman;
+            $logging->user_id = Auth::id();
+            $logging->activity = 'Create Data';
+            $logging->error_message = $e->getMessage();
+            $logging->save(); 
             return response()->json([
-                'message' => 'Page Not Found'
-            ], 404);
+                'message' => $e->getMessage()
+            ], 500);
         }
     }
 
@@ -85,11 +121,12 @@ class PeminjamanController extends Controller
      */
     public function store(Request $request)
     {
-        $id = IdGenerator::generate(['table' => 'peminjaman', 'field'=> 'kode_peminjaman','length' => 6, 'prefix' => 'PM']);
+        $id = IdGenerator::generate(['table' => 'transaksi', 'field'=> 'kode_peminjaman','length' => 6, 'prefix' => 'PM']);
         
         $kode_peminjaman = $id;
         $kode_buku = $request->kode_buku;
         $kode_anggota = $request->kode_peminjam;
+        $durasi_peminjaman = $request->durasi_peminjaman;
         $currentDate = Carbon\Carbon::now();
         try {
             $buku = DataBuku::find($kode_buku);
@@ -98,22 +135,30 @@ class PeminjamanController extends Controller
                     'kode_peminjaman'=> $kode_peminjaman,
                     'id_buku'=> $kode_buku,
                     'id_anggota'=> $kode_anggota,
+                    'durasi_peminjaman'=> $durasi_peminjaman,
                     'tanggal_peminjaman' => $currentDate
                 ]);
                 $buku->jumlah_tersedia = $buku->jumlah_tersedia - 1;
                 $buku->save();
-                $logging = LogPeminjamanSuccess::create([
-                    'kode_peminjaman'=> $kode_peminjaman,
-                    'user_id' => Auth::id(),
-                    'activity' => 'Create Data'
-                ]);
+                $logging = new LogPeminjamanSuccess;
+                $logging->kode_peminjaman = $kode_peminjaman;
+                $logging->user_id = Auth::id();
+                $logging->activity = 'Create Data';
+                $logging->save(); 
+                Alert::success('Success', 'Data Ditambahkan');
                 return redirect('/peminjaman'); 
             }
             
-        } catch (Exception $th) {
+        } catch (Exception $e) {
+            $logging = new LogPeminjamanError;
+            $logging->kode_peminjaman = $kode_peminjaman;
+            $logging->user_id = Auth::id();
+            $logging->activity = 'Create Data';
+            $logging->error_message = $e->getMessage();
+            $logging->save(); 
             return response()->json([
-                'message' => $th
-            ], 400);
+                'message' => $e->getMessage()
+            ], 500);
         }
     }
 
@@ -140,10 +185,10 @@ class PeminjamanController extends Controller
         try {
             
             return view('peminjaman.edit', compact('peminjaman'));
-        } catch (\Throwable $th) {
+        } catch (Exception $e) {
             return response()->json([
-                'message' => 'Page Not Found'
-            ], 404);
+                'message' => $e->getMessage()
+            ], 500);
         }
     }
 
@@ -169,11 +214,18 @@ class PeminjamanController extends Controller
                 'user_id' => Auth::id(),
                 'activity' => 'Update Data'
             ]);
+            Alert::success('Success', 'Data Berhasil Diupdate');
             return redirect('/peminjaman');
-        } catch (Exception $th) {
+        } catch (Exception $e) {
+            $logging = new LogPeminjamanError;
+            $logging->kode_peminjaman = $kode_peminjaman;
+            $logging->user_id = Auth::id();
+            $logging->activity = 'Update Data';
+            $logging->error_message = $e->getMessage();
+            $logging->save(); 
             return response()->json([
-                'message' => $th
-            ], 400);
+                'message' => $e->getMessage()
+            ], 500);
         }
     }
 
@@ -194,11 +246,18 @@ class PeminjamanController extends Controller
                 'user_id' => Auth::id(),
                 'activity' => 'Delete Data'
             ]);
+            Alert::success('Success', 'Data Berhasil Dihapus');
             return redirect('/peminjaman');
-        } catch (Exception $th) {
+        } catch (Exception $e) {
+            $logging = new LogPeminjamanError;
+            $logging->kode_peminjaman = $kode_peminjaman;
+            $logging->user_id = Auth::id();
+            $logging->activity = 'Delete Data';
+            $logging->error_message = $e->getMessage();
+            $logging->save(); 
             return response()->json([
-                'message' => $th
-            ], 400);
+                'message' => $e->getMessage()
+            ], 500);
         }
     }
 }

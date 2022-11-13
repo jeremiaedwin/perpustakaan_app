@@ -13,19 +13,15 @@
             <div class="col-12">
                 <div class="card">
                     <div class="card-body">
+    
                     <div class="form-group">
-                        <label for="">ID Anggota</label>
-                        <input type="text" name="id_anggota" class="form-control">
+                        <label for="">NIS Anggota</label>
+                        <input type="text" name="nis_anggota" class="form-control">
                     </div>
 
                     <div class="form-group">
                         <label for="">Nama Anggota</label>
                         <input type="text" name="nama_anggota" class="form-control">
-                    </div>
-
-                    <div class="form-group">
-                        <label for="">NIS Anggota</label>
-                        <input type="text" name="nis_anggota" class="form-control">
                     </div>
 
                     <div class="form-group">

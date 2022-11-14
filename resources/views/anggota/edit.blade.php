@@ -7,7 +7,7 @@
 @stop
 
 @section('content')
-    <form action="/anggota/{{$anggota->id_anggota}}" method="post">
+    <form action="/anggota/{{$anggota->nis_anggota}}" method="post">
     @method('PUT')
         @csrf
         <div class="row">
@@ -15,10 +15,16 @@
                 <div class="card">
                     <div class="card-body">
 
-                    <div class="form-group">
+                        <!--<div class="form-group">
                             <label for="exampleInputName">id_anggota</label>
                             <input disabled type="text" class="form-control @error('id_anggota') is-invalid @enderror" id="exampleInputName" placeholder="id anggota" name="id_anggota" value="{{$anggota->id_anggota}}">
                             @error('id_anggota') <span class="text-danger">{{$message}}</span> @enderror
+                        </div>-->
+                        
+                        <div class="form-group">
+                            <label for="exampleInputName">nis_anggota</label>
+                            <input disabled type="text" class="form-control @error('nis_anggota') is-invalid @enderror" id="exampleInputName" placeholder="nis anggota" name="nis_anggota" value="{{$anggota->nis_anggota}}">
+                            @error('nis_anggota') <span class="text-danger">{{$message}}</span> @enderror
                         </div>
 
                         <div class="form-group">
@@ -26,12 +32,6 @@
                             <input type="text" name="nama_anggota" id="" value="{{$anggota->nama_anggota}}" class="form-control">
                         </div>
 
-                        <div class="form-group">
-                            <label for="exampleInputName">nis_anggota</label>
-                            <input disabled type="text" class="form-control @error('nis_anggota') is-invalid @enderror" id="exampleInputName" placeholder="nis anggota" name="nis_anggota" value="{{$anggota->nis_anggota}}">
-                            @error('nis_anggota') <span class="text-danger">{{$message}}</span> @enderror
-                        </div>
-                        
                         <div class="form-group">
                             <label for="">alamat_anggota</label>
                             <input type="text" name="alamat_anggota" id="" value="{{$anggota->alamat_anggota}}" class="form-control">

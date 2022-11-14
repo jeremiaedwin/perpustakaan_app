@@ -22,7 +22,7 @@ Auth::routes();
 Route::resource('users', \App\Http\Controllers\UserController::class)
     ->middleware('auth');
 
-    Route::resource('peminjaman', \App\Http\Controllers\PeminjamanController::class);
+    Route::resource('peminjaman', \App\Http\Controllers\PeminjamanController::class)->middleware('auth');;
     Route::resource('anggota', \App\Http\Controllers\AnggotaController::class);
     Route::get('/data_buku', [DataBukuController::class, 'index']);
     Route::get('/data_buku/create', [DataBukuController::class, 'create']);

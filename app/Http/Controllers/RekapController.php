@@ -5,16 +5,20 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Mpdf\Mpdf as PDF;
 use App\Models\Peminjaman;
+use App\Models\Anggota;
+use App\Models\DataBuku;
 use Illuminate\Support\Facades\Storage;
 
 class RekapController extends Controller
 {
     public function makeRekap(){
         $documentFileName = "rekap.pdf";
-        $peminjaman = Peminjaman::all();
+        $peminjaman = Anggota::join('transaksi','transaksi.id_anggota', '=', 'anggotas.id_anggota')
+        ->join('data_buku', 'transaksi.id_buku', '=', 'data_buku.id_buku')
+        ->get();
         $peminjamanTotal = Peminjaman::all()->count();
         $peminjamanTelahSelesai = Peminjaman::where('tanggal_pengembalian', '!=','')->count();
-        $peminjamanBelumSelesai = Peminjaman::where('tanggal_pengembalian', '=','')->count();
+        $peminjamanBelumSelesai = Peminjaman::where('tanggal_pengembalian', '=',null)->count();
         $document = new PDF( [
             'mode' => 'utf-8',
             'format' => 'A4',

@@ -28,11 +28,18 @@
                             <label for="">Buku : </label>
                             <select name="kode_buku" id="" class="form-control">
                                 <option value="">Pilih Buku</option>
-                                <option value="BK01">Atomic Habbit</option>
+                                @foreach($buku as $buku)
+                                <option value="{{$buku->id_buku}}">{{$buku->judul_buku}}</option>
+                                @endforeach
                             </select>
                         </div>
-
+                        <div class="form-group">
+                            <label for="">Durasi Peminjaman</label>
+                            <input type="number" name="durasi_peminjaman" class="form-control">
+                        </div>
                     </div>
+
+                    
 
                     <div class="card-footer">
                         <button type="submit" class="btn btn-primary">Simpan</button>

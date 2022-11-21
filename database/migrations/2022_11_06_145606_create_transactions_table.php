@@ -16,7 +16,7 @@ class CreateTransactionsTable extends Migration
         Schema::create('transaksi', function (Blueprint $table) {
             $table->string('kode_peminjaman', 8)->primary();
             $table->string('id_anggota');
-            $table->foreign('id_anggota')->references('id_anggota')->on('anggotas')->onDelete('cascade');
+            $table->foreign('id_anggota')->references('nis_anggota')->on('anggotas')->onDelete('cascade');
             $table->string('id_buku');
             $table->foreign('id_buku')->references('id_buku')->on('data_buku')->onDelete('cascade');
             $table->date('tanggal_peminjaman');

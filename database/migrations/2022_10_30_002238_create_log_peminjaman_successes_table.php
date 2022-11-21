@@ -16,8 +16,14 @@ class CreateLogPeminjamanSuccessesTable extends Migration
         Schema::create('log_peminjaman_successes', function (Blueprint $table) {
             $table->id();
             $table->string('kode_peminjaman');
+            $table->string('status');
+            $table->string('message');
+            $table->string('method');
+            $table->string('url');
+            $table->string('ip');
+            $table->string('user_agent');
             $table->string('user_id');
-            $table->string('activity');
+            $table->string('action');
             $table->timestamps();
         });
     }

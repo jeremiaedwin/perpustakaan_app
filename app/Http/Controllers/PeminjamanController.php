@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\PeminjamanStoreRequest;
 use Illuminate\Http\Request;
 use App\Models\Peminjaman;
 use App\Models\LogPeminjamanSuccess;
@@ -12,6 +13,7 @@ use Auth;
 use DataTables;
 use Exception;
 use Alert;
+use Carbon;
 // Import ID generator
 use Haruncpi\LaravelIdGenerator\IdGenerator;
 
@@ -35,16 +37,6 @@ class PeminjamanController extends Controller
                         $hari = (string)$peminjaman->durasi_peminjaman;
                         return date('Y-m-d', strtotime($peminjaman->tanggal_peminjaman. ' + '.$hari.' days'));
                     })
-                    ->addColumn('telat', function($peminjaman){
-                        $hari = (string)$peminjaman->durasi_peminjaman;
-                        if( date('Y-m-d', strtotime($peminjaman->tanggal_pengembalian. ' + '.$hari.' days')) <= $peminjaman->tanggal_pengembalian && $peminjaman->tanggal_pengembalian != null){
-                            return 'Telat';
-                        }else if($peminjaman->tanggal_pengembalian == null){
-                            return 'Belum dikembalikan';
-                        }else{
-                            return 'Tidak Telat';
-                        }
-                    })
                     ->addColumn('status', function($peminjaman){
                         if($peminjaman->tanggal_pengembalian == null){
                             return 'Belum Kembali';
@@ -66,20 +58,12 @@ class PeminjamanController extends Controller
                     })
                     ->rawColumns(['action', 'status', 'tenggat_waktu', 'telat'])
                     ->make(true);
+                    
             }
-            $logging = LogPeminjamanSuccess::create([
-                'kode_peminjaman'=> 'ALL',
-                'user_id' => Auth::id(),
-                'activity' => 'Get All Data'
-            ]);
+            \LogPeminjamanSuccessActivity::addToLog('Berhasil Menampilkan Seluruh Data.', '200', 'Get All', ' ');
             return view('peminjaman.index');
         } catch (Exception $e) {
-            $logging = new LogPeminjamanError;
-            $logging->kode_peminjaman = 'ALL';
-            $logging->user_id = Auth::id();
-            $logging->activity = 'Get All Data';
-            $logging->error_message = $e->getMessage();
-            $logging->save(); 
+            \LogPeminjamanErrorsActivity::addToLog(json_encode($e->getMessage()), '500', 'Get All', ' ');
             return response()->json([
                 'message' => $e->getMessage()
             ], 500);
@@ -118,8 +102,9 @@ class PeminjamanController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(PeminjamanStoreRequest $request)
     {
+        $validated = $request->validated();
         $id = IdGenerator::generate(['table' => 'transaksi', 'field'=> 'kode_peminjaman','length' => 6, 'prefix' => 'PM']);
         
         $kode_peminjaman = $id;
@@ -139,22 +124,15 @@ class PeminjamanController extends Controller
                 ]);
                 $buku->jumlah_tersedia = $buku->jumlah_tersedia - 1;
                 $buku->save();
-                $logging = new LogPeminjamanSuccess;
-                $logging->kode_peminjaman = $kode_peminjaman;
-                $logging->user_id = Auth::id();
-                $logging->activity = 'Create Data';
-                $logging->save(); 
+                \LogPeminjamanSuccessActivity::addToLog('Data Berhasil Ditambahkan.', '200', 'Insert', $kode_peminjaman);
                 Alert::success('Success', 'Data Ditambahkan');
+                return redirect('/peminjaman'); 
+            }else{
                 return redirect('/peminjaman'); 
             }
             
         } catch (Exception $e) {
-            $logging = new LogPeminjamanError;
-            $logging->kode_peminjaman = $kode_peminjaman;
-            $logging->user_id = Auth::id();
-            $logging->activity = 'Create Data';
-            $logging->error_message = $e->getMessage();
-            $logging->save(); 
+            \LogPeminjamanErrorsActivity::addToLog(json_encode($e->getMessage()), '500', 'Insert', $kode_peminjaman);
             return response()->json([
                 'message' => $e->getMessage()
             ], 500);
@@ -208,20 +186,11 @@ class PeminjamanController extends Controller
             $buku = DataBuku::find($peminjaman->id_buku);
             $buku->jumlah_tersedia = $buku->jumlah_tersedia + 1;
             $buku->save();
-            $logging = LogPeminjamanSuccess::create([
-                'kode_peminjaman'=> $kode_peminjaman,
-                'user_id' => Auth::id(),
-                'activity' => 'Update Data'
-            ]);
+            \LogPeminjamanSuccessActivity::addToLog('Berhasil Update Data.', '200', 'Update', $kode_peminjaman);
             Alert::success('Success', 'Data Berhasil Diupdate');
             return redirect('/peminjaman');
         } catch (Exception $e) {
-            $logging = new LogPeminjamanError;
-            $logging->kode_peminjaman = $kode_peminjaman;
-            $logging->user_id = Auth::id();
-            $logging->activity = 'Update Data';
-            $logging->error_message = $e->getMessage();
-            $logging->save(); 
+            \LogPeminjamanErrorsActivity::addToLog(json_encode($e->getMessage()), '500', 'Update', $kode_peminjaman);
             return response()->json([
                 'message' => $e->getMessage()
             ], 500);

@@ -29,7 +29,6 @@
                             <th>Tenggat Waktu</th>
                             <th>Tanggal Pengembalian</th>
                             <th>Status</th>
-                            <th>Telat</th>
                             <th>Action</th>
                         </tr>
                         </thead>
@@ -59,7 +58,6 @@
             {data: 'tenggat_waktu', name: 'tenggat_waktu'},
             {data: 'tanggal_pengembalian', name: 'tanggal_pengembalian'},
             {data: 'status', name: 'status'},
-            {data: 'telat', name: 'telat'},
             {data: 'action', name: 'action', orderable: false, searchable: false},
         ]
     });

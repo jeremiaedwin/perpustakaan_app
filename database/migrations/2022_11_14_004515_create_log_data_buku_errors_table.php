@@ -15,7 +15,7 @@ class CreateLogDataBukuErrorsTable extends Migration
     {
         Schema::create('log_data_buku_errors', function (Blueprint $table) {
             $table->id();
-            $$table->string('id_buku');
+            $table->string('id_buku');
             $table->string('user_id');
             $table->string('activity');
             $table->string('error_message');

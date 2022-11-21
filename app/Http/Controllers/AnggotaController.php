@@ -20,6 +20,9 @@ class AnggotaController extends Controller
     public function index(Request $request)
     {
         try {
+            $validated = $request->validate([
+                'nis_anggota' => 'required|max:8'
+            ]);
             $anggota = Anggota::all();
             if ($request->ajax()){
                 

@@ -17,4 +17,9 @@ class Anggota extends Model
     ];
     protected $primaryKey = 'nis_anggota';
     protected $keyType = 'string';
+
+    public function peminjaman()
+    {
+        return $this->hasMany(Peminjaman::class, 'nis_anggota');
+    }
 }

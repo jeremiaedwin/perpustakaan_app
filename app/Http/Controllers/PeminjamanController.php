@@ -9,9 +9,12 @@ use App\Models\LogPeminjamanSuccess;
 use App\Models\LogPeminjamanError;
 use App\Models\Anggota;
 use App\Models\DataBuku;
+use App\Models\Pengembalian;
 use Auth;
 use DataTables;
 use Exception;
+use Throwable;
+use Error;
 use Alert;
 use Carbon;
 // Import ID generator
@@ -24,58 +27,50 @@ class PeminjamanController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
+
     public function index(Request $request)
     {
         try {
-            $peminjaman = Anggota::join('transaksi','transaksi.id_anggota', '=', 'anggotas.id_anggota')
-                                    ->join('data_buku', 'transaksi.id_buku', '=', 'data_buku.id_buku')
+            $peminjaman = Anggota::join('peminjaman','peminjaman.kode_anggota', '=', 'anggotas.nis_anggota')
+                                    ->join('data_buku', 'peminjaman.kode_buku', '=', 'data_buku.id_buku')
                                     ->get();
             if ($request->ajax()){
-                
                 return Datatables::of($peminjaman)->addIndexColumn()
                     ->addColumn('tenggat_waktu', function($peminjaman){
                         $hari = (string)$peminjaman->durasi_peminjaman;
                         return date('Y-m-d', strtotime($peminjaman->tanggal_peminjaman. ' + '.$hari.' days'));
                     })
-                    ->addColumn('status', function($peminjaman){
-                        if($peminjaman->tanggal_pengembalian == null){
-                            return 'Belum Kembali';
-                        }else{
-                            return 'Telah Kembali';
-                        }
-                    })
+                    // Button pengembalian
                     ->addColumn('action', function($peminjaman){
+                        if(Pengembalian::where('kode_peminjaman', '=', $peminjaman->kode_peminjaman)->first() != null){
+                            $updateButton = '<button  type="disable" class="btn btn-success btn-xs" style="pointer-events: none">Telah Kembali</button>';
+                        }else{
+                            $updateButton = '<form action="/pengembalian" id="update-form" method="post">
+                                        '. csrf_field() .'
+                                        <input type="hidden" name="kode_peminjaman" value="'.$peminjaman->kode_peminjaman.'">
+                                        <button type="submit" class="btn btn-warning btn-xs">Pengembalian</button>
+                                        </form>';
+                        }
                         
-                        $updateButton = '<form action="peminjaman/'.$peminjaman->kode_peminjaman.'" id="update-form" method="post">
-                                        '. method_field('put') . csrf_field() .'
-                                        <button type="submit" class="btn btn-primary btn-xs">Kembali</button>
-                                        </form>';
-                        $deleteButton = '<form action="peminjaman/'.$peminjaman->kode_peminjaman.'" id="delete-form" method="post">
-                                        '. method_field('delete') . csrf_field() .'
-                                        <button type="submit" class="btn btn-danger btn-xs">Hapus</button>
-                                        </form>';
-                        return $updateButton." ".$deleteButton;
+                        return $updateButton;
                     })
-                    ->rawColumns(['action', 'status', 'tenggat_waktu', 'telat'])
+                    ->addColumn('detail_button', function($peminjaman){
+                        $detail = '<a href="peminjaman/'.$peminjaman->kode_peminjaman.'" class="btn btn-xs btn-primary">Detail</a>';
+                        return $detail;
+                    })
+                    ->rawColumns(['action', 'tenggat_waktu', 'telat', 'detail_button'])
                     ->make(true);
                     
             }
             \LogPeminjamanSuccessActivity::addToLog('Berhasil Menampilkan Seluruh Data.', '200', 'Get All', ' ');
-            return view('peminjaman.index');
-        } catch (Exception $e) {
-            \LogPeminjamanErrorsActivity::addToLog(json_encode($e->getMessage()), '500', 'Get All', ' ');
-            return response()->json([
-                'message' => $e->getMessage()
-            ], 500);
+            
+        } catch (\Throwable $ex) {
+            \LogPeminjamanErrorsActivity::addToLog(json_encode($ex->getMessage()), '500', 'Get All', ' ');
+            dd('message : '. $ex->getMessage());
         }
-        
+        return view('peminjaman.index');
     }
 
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
     public function create()
     {
         
@@ -84,78 +79,111 @@ class PeminjamanController extends Controller
             $buku = DataBuku::all();
             return view('peminjaman.create', compact('anggota', 'buku'));
         } catch (Exception $e) {
-            $logging = new LogPeminjamanError;
-            $logging->kode_peminjaman = $kode_peminjaman;
-            $logging->user_id = Auth::id();
-            $logging->activity = 'Create Data';
-            $logging->error_message = $e->getMessage();
-            $logging->save(); 
             return response()->json([
                 'message' => $e->getMessage()
             ], 500);
         }
     }
 
-    /**
-     * Store a newly created resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
-     */
-    public function store(PeminjamanStoreRequest $request)
+    public function store(Request $request)
     {
-        $validated = $request->validated();
-        $id = IdGenerator::generate(['table' => 'transaksi', 'field'=> 'kode_peminjaman','length' => 6, 'prefix' => 'PM']);
-        
-        $kode_peminjaman = $id;
-        $kode_buku = $request->kode_buku;
-        $kode_anggota = $request->kode_peminjam;
-        $durasi_peminjaman = $request->durasi_peminjaman;
-        $currentDate = Carbon\Carbon::now();
         try {
-            $buku = DataBuku::find($kode_buku);
-            if($buku->jumlah_tersedia > 0){
-                $peminjaman = Peminjaman::create([
-                    'kode_peminjaman'=> $kode_peminjaman,
-                    'id_buku'=> $kode_buku,
-                    'id_anggota'=> $kode_anggota,
-                    'durasi_peminjaman'=> $durasi_peminjaman,
-                    'tanggal_peminjaman' => $currentDate
-                ]);
-                $buku->jumlah_tersedia = $buku->jumlah_tersedia - 1;
-                $buku->save();
-                \LogPeminjamanSuccessActivity::addToLog('Data Berhasil Ditambahkan.', '200', 'Insert', $kode_peminjaman);
-                Alert::success('Success', 'Data Ditambahkan');
-                return redirect('/peminjaman'); 
-            }else{
-                return redirect('/peminjaman'); 
+            // Validasi Form Input
+            $validated = $request->validate([
+                'kode_buku' => 'required',
+                'kode_anggota' => 'required',
+                'durasi_peminjaman' => 'required'
+            ]);
+            // generate new id peminjaman
+            $id = IdGenerator::generate([
+                'table' => 'peminjaman', 
+                'field'=> 'kode_peminjaman',
+                'length' => 6, 
+                'prefix' => 'PM'
+            ]);
+            $kode_peminjaman = $id;
+            
+            // Cek keberadaan data anggota
+            if(!Anggota::find($request->kode_anggota)){
+                Alert::success('Danger', 'Anggota Tidak Ditemukan');
+                return back(); 
             }
+
+            // Mencari Data Buku
+            $buku = DataBuku::find($request->kode_buku);
+           
+            // Cek keberadaan buku
+            if($buku){
+                // Pengecekan ketersediaan buku
+                if($buku->jumlah_tersedia > 0){
+                    // Simpan data peminjaman
+                    $peminjaman = Peminjaman::create([
+                        'kode_peminjaman'=> $kode_peminjaman,
+                        'kode_buku'=> $request->kode_buku,
+                        'kode_anggota'=> $request->kode_anggota,
+                        'durasi_peminjaman'=> (int)$request->durasi_peminjaman,
+                        'tanggal_peminjaman' => Carbon\Carbon::now()
+                    ]);
+
+                    // update stok buku
+                    $this->updateStokBuku($buku->id_buku);
+
+                    // Save log activity
+                    \LogPeminjamanSuccessActivity::addToLog('Data Berhasil Ditambahkan.', '200', 'Insert', $kode_peminjaman);
+                }else{
+                    // Alert gagal dan kembali ke halaman input buku
+                    Alert::success('Failed', 'Buku Tidak Tersedia');
+                    return back(); 
+                }
+            }else{
+                Alert::success('Failed', 'Buku Tidak Ditemukan');
+                return back(); 
+            }
+
+            // Status message success dan kembali ke halaman index peminjaman
+            Alert::success('Success', 'Data Ditambahkan');
+            return redirect('/peminjaman'); 
             
         } catch (Exception $e) {
-            \LogPeminjamanErrorsActivity::addToLog(json_encode($e->getMessage()), '500', 'Insert', $kode_peminjaman);
+            \LogPeminjamanErrorsActivity::addToLog(json_encode($e->getMessage()), '500', 'Insert', '-');
             return response()->json([
                 'message' => $e->getMessage()
             ], 500);
         }
     }
 
-    /**
-     * Display the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function show($id)
-    {
-        
+    public function updateStokBuku($id){
+        try {
+            // Pengurangan stok buku
+            $buku = DataBuku::find($id);
+            $buku->jumlah_tersedia = $buku->jumlah_tersedia - 1;
+            $buku->save();
+        } catch (\Throwable $th) {
+            \LogPeminjamanErrorsActivity::addToLog(json_encode($e->getMessage()), '500', 'Insert', '-');
+            return response()->json([
+                'message' => $e->getMessage()
+            ], 500);
+        }
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
+    public function show($id)
+    {
+        try {
+            $peminjaman = Peminjaman::find($id);
+            $hari = (string)$peminjaman->durasi_peminjaman;
+            $hari = date('Y-m-d', strtotime($peminjaman->tanggal_peminjaman. ' + '.$hari.' days'));
+            $telah_kembali = false;
+            if(Pengembalian::where('kode_peminjaman', '=', $id)->first()){
+                $telah_kembali = true;
+            }
+            \LogPeminjamanSuccessActivity::addToLog('Data Berhasil Didapatkan.', '200', 'Show', $peminjaman->kode_peminjaman);
+            return view('peminjaman.show', compact('peminjaman', 'hari', 'telah_kembali'));
+        }catch (Exception $e) {
+            \LogPeminjamanErrorsActivity::addToLog(json_encode($e->getMessage()), '500', 'Show', $id);
+            return abort(500);
+        }
+    }
+
     public function edit($id)
     {
         $peminjaman = Peminjaman::find($id);
@@ -169,63 +197,14 @@ class PeminjamanController extends Controller
         }
     }
 
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
+
     public function update(Request $request, $id)
     {
-        try {
-            $peminjaman = Peminjaman::find($id);
-            $kode_peminjaman = $id;
-            $peminjaman->tanggal_pengembalian = Carbon\Carbon::now();;
-            $peminjaman->save();
-            $buku = DataBuku::find($peminjaman->id_buku);
-            $buku->jumlah_tersedia = $buku->jumlah_tersedia + 1;
-            $buku->save();
-            \LogPeminjamanSuccessActivity::addToLog('Berhasil Update Data.', '200', 'Update', $kode_peminjaman);
-            Alert::success('Success', 'Data Berhasil Diupdate');
-            return redirect('/peminjaman');
-        } catch (Exception $e) {
-            \LogPeminjamanErrorsActivity::addToLog(json_encode($e->getMessage()), '500', 'Update', $kode_peminjaman);
-            return response()->json([
-                'message' => $e->getMessage()
-            ], 500);
-        }
+        
     }
 
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
     public function destroy($id)
     {
-        try {
-            $peminjaman = Peminjaman::find($id);
-            $kode_peminjaman = $peminjaman->kode_peminjaman;
-            $peminjaman->delete();
-            $logging = LogPeminjamanSuccess::create([
-                'kode_peminjaman'=> $kode_peminjaman,
-                'user_id' => Auth::id(),
-                'activity' => 'Delete Data'
-            ]);
-            Alert::success('Success', 'Data Berhasil Dihapus');
-            return redirect('/peminjaman');
-        } catch (Exception $e) {
-            $logging = new LogPeminjamanError;
-            $logging->kode_peminjaman = $kode_peminjaman;
-            $logging->user_id = Auth::id();
-            $logging->activity = 'Delete Data';
-            $logging->error_message = $e->getMessage();
-            $logging->save(); 
-            return response()->json([
-                'message' => $e->getMessage()
-            ], 500);
-        }
+       
     }
 }

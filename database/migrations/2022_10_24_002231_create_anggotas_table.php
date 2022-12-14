@@ -14,10 +14,13 @@ class CreateAnggotasTable extends Migration
     public function up()
     {
         Schema::create('anggotas', function (Blueprint $table) {
-            $table->string('nis_anggota', 10)->primary();
+            $table->string('id_anggota', 10)->primary();
+            $table->string('nis_anggota');
             $table->string('nama_anggota');
             $table->string('alamat_anggota');
             $table->string('nomor_telepon_anggota');
+            $table->string('email_anggota');
+            $table->string('status_anggota')->default('aktif');
             $table->timestamps();
         });
     }

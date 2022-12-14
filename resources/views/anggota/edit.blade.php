@@ -14,33 +14,39 @@
             <div class="col-12">
                 <div class="card">
                     <div class="card-body">
-
-                        <!--<div class="form-group">
-                            <label for="exampleInputName">id_anggota</label>
-                            <input disabled type="text" class="form-control @error('id_anggota') is-invalid @enderror" id="exampleInputName" placeholder="id anggota" name="id_anggota" value="{{$anggota->id_anggota}}">
-                            @error('id_anggota') <span class="text-danger">{{$message}}</span> @enderror
-                        </div>-->
                         
                         <div class="form-group">
-                            <label for="exampleInputName">nis_anggota</label>
+                            <label for="exampleInputName">ID Anggota</label>
+                            <input disabled type="text" class="form-control @error('id_anggota') is-invalid @enderror" id="exampleInputName" placeholder="id anggota" name="id_anggota" value="{{$anggota->id_anggota}}">
+                            @error('nis_anggota') <span class="text-danger">{{$message}}</span> @enderror
+                        </div>
+
+                        <div class="form-group">
+                            <label for="exampleInputName">NIS Anggota</label>
                             <input disabled type="text" class="form-control @error('nis_anggota') is-invalid @enderror" id="exampleInputName" placeholder="nis anggota" name="nis_anggota" value="{{$anggota->nis_anggota}}">
                             @error('nis_anggota') <span class="text-danger">{{$message}}</span> @enderror
                         </div>
 
                         <div class="form-group">
-                            <label for="">nama_anggota</label>
+                            <label for="">Nama Anggota</label>
                             <input type="text" name="nama_anggota" id="" value="{{$anggota->nama_anggota}}" class="form-control">
                         </div>
 
                         <div class="form-group">
-                            <label for="">alamat_anggota</label>
+                            <label for="">Alamat Anggota</label>
                             <input type="text" name="alamat_anggota" id="" value="{{$anggota->alamat_anggota}}" class="form-control">
                         </div>
                         
                         <div class="form-group">
-                            <label for="">nomor_telepon_anggota</label>
+                            <label for="">Nomor Telepon Anggota</label>
                             <input type="text" name="nomor_telepon_anggota" id="" value="{{$anggota->nomor_telepon_anggota}}" class="form-control">
                         </div> 
+
+                        <div class="form-group">
+                            <label for="">Email Anggota</label>
+                            <input type="text" name="email_anggota" id="" value="{{$anggota->email_anggota}}" class="form-control">
+                        </div> 
+
                     </div>
 
                     <div class="card-footer">

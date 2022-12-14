@@ -2,6 +2,8 @@
 
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\DataBukuController;
+use App\Http\Controllers\SendEmailController;
+
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -50,3 +52,7 @@ Auth::routes();
 Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
 	
 Route::get('/rekap', [App\Http\Controllers\RekapController::class, 'makeRekap']);
+
+Route::get('/send-email', [SendEmailController::class, 'index'])->name('kirim-email');
+
+Route::post('/post-email', [SendEmailController::class, 'store'])->name('post-email');

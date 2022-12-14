@@ -10,11 +10,14 @@ class Anggota extends Model
     use HasFactory;
     protected $table = 'anggotas';
     protected $fillable = [
+        'id_anggota',
         'nis_anggota',
         'nama_anggota',
         'alamat_anggota',
-        'nomor_telepon_anggota'
+        'nomor_telepon_anggota',
+        'email_anggota',
+        'status_anggota'
     ];
-    protected $primaryKey = 'nis_anggota';
+    protected $primaryKey = 'id_anggota';
     protected $keyType = 'string';
 }

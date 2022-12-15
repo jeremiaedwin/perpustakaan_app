@@ -4,7 +4,7 @@
 
 @section('content_header')
     <h1 class="m-0 text-dark">Tambah Peminjaman</h1>
-@stop
+@endsection
 
 @section('content')
     <form action="{{route('peminjaman.store')}}" method="post">
@@ -56,8 +56,16 @@
                 </div>
             </div>
         </div>
-@stop
+        
+@endsection
 @push('js')
-    
+
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.1/jquery.min.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+        <script>
+            $(document).ready(function() {
+                $('.js-example-basic-single').select2();
+            });
+        </script>
     
 @endpush

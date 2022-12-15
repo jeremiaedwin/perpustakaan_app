@@ -24,20 +24,26 @@
                             <th>Judul Buku</th>
                             <th>Penerbit</th>
                             <th>Penulis/Penyusun</th>
+                            <th>Kategori</th>
+                            <th>Topik</th>
                             <th>Jumlah Stok</th>
                             <th>Jumlah Tersedia</th>
                             <th>Action</th>
                         </tr>
                         </thead>
                         <tbody>
-                        @php $no =0  @endphp
+                        @php 
+                        $no =0  
+                        @endphp
                         @foreach($data_buku as $a)
                             <tr>
-                                <td>{{$no+1}}</td>
+                                <td>{{$no++}}</td>
                                 <td>{{$a->id_buku}}</td>
                                 <td>{{$a->judul_buku}}</td>
                                 <td>{{$a->penerbit_buku}}</td>
                                 <td>{{$a->penulis_buku}}</td>
+                                <td>{{$a->kategori}}</td>
+                                <td>{{$a->topik}}</td>
                                 <td>{{$a->jumlah_stok}}</td>
                                 <td>{{$a->jumlah_tersedia}}</td>
                                 <td>

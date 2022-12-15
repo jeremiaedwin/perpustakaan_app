@@ -35,6 +35,24 @@
                             <label for="">penulis_buku</label>
                             <input type="text" name="penulis_buku" id="" value="{{$data_buku->penulis_buku}}" class="form-control">
                         </div>
+
+                        <div class="form-group">
+                            <label for="">Kategori</label>
+                            <select class="form-control" name="kategori" id="kategori"></select>
+                            <option value="">-- Pilih Kategori --</option>
+                            @foreach ($kategori as $i)
+                                <option value={{$i}} {{$i == $data_buku->kategori? "selected" : ''}}> {{$i}} </option>
+                            @endforeach
+                        </div>
+
+                        <div class="form-group">
+                            <label for="">Topik</label>
+                            <select class="form-control" name="kategori" id="kategori"></select>
+                            <option value="">-- Pilih Topik Buku --</option>
+                            @foreach ($topik as $i)
+                                <option value={{$i}} {{$i == $data_buku->topik? "selected" : ''}}>{{$i}}</option>
+                            @endforeach
+                        </div>
                         
                         <div class="form-group">
                             <label for="">jumlah_stok</label>

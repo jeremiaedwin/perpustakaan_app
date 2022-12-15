@@ -16,6 +16,8 @@ class DataBuku extends Model
         'judul_buku',
         'penerbit_buku',
         'penulis_buku',
+        'kategori',
+        'topik',
         'jumlah_stok',
         'jumlah_tersedia'
     ];

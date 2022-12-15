@@ -15,11 +15,13 @@ class CreatePeminjamenTable extends Migration
     {
         Schema::create('peminjaman', function (Blueprint $table) {
             $table->string('kode_peminjaman', 8)->primary();
-            $table->string('kode_peminjam');
+            $table->string('kode_anggota');
             $table->string('kode_buku');
+            $table->integer('durasi_peminjaman');
             $table->date('tanggal_peminjaman');
-            $table->date('tanggal_pengembalian')->nullable();
             $table->timestamps();
+            $table->foreign('kode_anggota')->references('nis_anggota')->on('anggotas');
+            $table->foreign('kode_buku')->references('id_buku')->on('data_buku');
         });
     }
 

@@ -25,17 +25,27 @@
         <tr>
             <td>Total Peminjaman</td>
             <td>:</td>
-            <td>{{$peminjamanTotal}}</td>
+            <td>{{$peminjaman->count()}} Peminjaman</td>
         </tr>
         <tr>
             <td>Peminjaman Telah Selesai</td>
             <td>:</td>
-            <td>{{$peminjamanTelahSelesai}}</td>
+            <td>{{$peminjamanTelahSelesai}} Peminjaman</td>
         </tr>
         <tr>
             <td>Peminjaman Belum Selesai</td>
             <td>:</td>
-            <td>{{$peminjamanBelumSelesai}}</td>
+            <td>{{$peminjamanBelumSelesai}} Peminjaman</td>
+        </tr>
+        <tr>
+            <td>Jumlah Judul Buku Terpinjam</td>
+            <td>:</td>
+            <td>{{$judulBukuTerpinjam}} Judul Buku</td>
+        </tr>
+        <tr>
+            <td>Jumlah Anggota yang telah melakukan peminjaman</td>
+            <td>:</td>
+            <td>{{$jumlahPeminjam}} Orang</td>
         </tr>
     </table>
     <br>
@@ -50,13 +60,18 @@
             </tr>
         </thead>
         <tbody>
+            @php $no=1 @endphp
             @foreach($peminjaman as $pm)
             <tr>
-                <td>{{$pm->kode_peminjaman}}</td>
-                <td>{{$pm->nama_anggota}}</td>
-                <td>{{$pm->judul_buku}}</td>
+                <td>{{$no++}}</td>
+                <td>{{$pm->anggota->nama_anggota}}</td>
+                <td>{{$pm->buku->judul_buku}}</td>
                 <td>{{$pm->tanggal_peminjaman}}</td>
-                <td>{{$pm->tanggal_pengembalian}}</td>
+                @if($pm->tanggal_pengembalian != null)
+                <td>{{date('j F, Y', strtotime($pm->pengembalian->tanggal_pengembalian))}}</td>
+                @else
+                <td>{{''}}</td>
+                @endif
             </tr>
             @endforeach
         </tbody>

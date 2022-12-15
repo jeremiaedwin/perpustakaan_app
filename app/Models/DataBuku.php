@@ -24,4 +24,9 @@ class DataBuku extends Model
     protected $primaryKey = 'id_buku';
     protected $keyType = 'string';
     public $incrementing = 'false';
+
+    public function peminjaman()
+    {
+        return $this->hasMany(Peminjaman::class, 'id_buku');
+    }
 }

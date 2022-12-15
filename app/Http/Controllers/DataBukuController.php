@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\DataBuku;
+use Illuminate\Support\Facades\DB;
 
 class DataBukuController extends Controller
 {
@@ -43,6 +44,8 @@ class DataBukuController extends Controller
         $judul_buku = $request->judul_buku;
         $penerbit_buku = $request->penerbit_buku;
         $penulis_buku = $request->penulis_buku;
+        $kategori = $request->kategori;
+        $topik = $request->topik;
         $jumlah_stok = $request->jumlah_stok;
         $jumlah_tersedia = $jumlah_stok;
 
@@ -52,6 +55,8 @@ class DataBukuController extends Controller
                 'judul_buku' => $judul_buku,
                 'penerbit_buku' => $penerbit_buku,
                 'penulis_buku' => $penulis_buku,
+                'kategori' => $kategori,
+                'topik' => $topik,
                 'jumlah_stok' => $jumlah_stok,
                 'jumlah_tersedia' => $jumlah_tersedia
             ]);
@@ -108,6 +113,8 @@ class DataBukuController extends Controller
             $data_buku->judul_buku = $request->judul_buku;
             $data_buku->penerbit_buku = $request->penerbit_buku;
             $data_buku->penulis_buku = $request->penulis_buku;
+            $data_buku->kategori = $request->kategori;
+            $data_buku->topik = $request->topik; 
             $data_buku->jumlah_stok = $request->jumlah_stok;
             $data_buku->jumlah_tersedia = $request->jumlah_stok;
             $data_buku->save();

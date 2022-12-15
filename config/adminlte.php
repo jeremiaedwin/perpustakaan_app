@@ -240,6 +240,11 @@ return [
             'url'  => '/peminjaman',
             'icon'  => 'fa fa-users',
         ],
+        [
+            'text' => 'Data Buku',
+            'url'  => '/data_buku',
+            'icon'  => 'fa fa-solid fa-book',
+        ]
     ],
 
     /*

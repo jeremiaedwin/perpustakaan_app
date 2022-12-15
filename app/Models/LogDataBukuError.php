@@ -5,9 +5,9 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class LogAnggotaError extends Model
+class LogDataBukuError extends Model
 {
     use HasFactory;
-    protected $table = 'log_anggota_errors';
-    protected $guarted = [];
+    protected $table ='log_data_buku_errors';
+    protected $guarded = [];
 }

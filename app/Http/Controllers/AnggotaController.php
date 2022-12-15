@@ -4,7 +4,9 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Anggota;
+use App\Models\User;
 use App\Models\LogAnggotaSuccess;
+use App\Jobs\createAnggotaJob;
 use Auth;
 use Carbon;
 use DataTables;
@@ -18,7 +20,8 @@ class AnggotaController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function index(Request $request)
-    {
+    {   
+        $anggota = Anggota::all();
         try {
             $anggota = Anggota::all();
             if ($request->ajax()){
@@ -36,15 +39,15 @@ class AnggotaController extends Controller
                     ->rawColumns(['action'])
                     ->make(true);
             }
-            $logging = LogAnggotaSuccess::create([
-                'nis_anggota'=> 'ALL',
-                'user_id' => Auth::id(),
-                'activity' => 'Get All Data'
-            ]);
+            //$logging = LogAnggotaSuccess::create([
+            //    'id_anggota'=> 'ALL',
+            //    'user_id' => Auth::id(),
+            //    'activity' => 'Get All Data'
+            //]);
             return view('anggota.index');
-        } catch (\Throwable $th) {
+        } catch (\Throwable $e) {
             return response()->json([
-                'message' => 'Server Errorr!'
+                'message' => $e->getMessage()
             ], 500);
         }
     }
@@ -58,7 +61,10 @@ class AnggotaController extends Controller
      public function create()
     {
         try {
-            return  view('anggota.create');
+            $job = new createAnggotaJob();
+            $this->dispatch($job);
+            return view('anggota.index');
+            //return  view('anggota.create');
         } catch (\Throwable $th) {
             return response()->json([
                 'message' => 'Page Not Found'
@@ -78,19 +84,29 @@ class AnggotaController extends Controller
         $nama_anggota = $request->nama_anggota;
         $alamat_anggota = $request->alamat_anggota;
         $nomor_telepon_anggota = $request->nomor_telepon_anggota;
+        $email_anggota = $request->email_anggota;
 
         try {
+            $user = User::create([
+                'name' => $nama_anggota,
+                'email' => $email,
+                'password' => bcrypt('12345678')
+            ]);
+            $user->assignRole('anggota');
+
             $anggota = Anggota::create([
                 'nis_anggota'=> $nis_anggota,
+                'id_user'=> $user->id,
                 'nama_anggota'=> $nama_anggota,
-                'alamat_anggota' => $alamat_anggota,
-                'nomor_telepon_anggota' => $nomor_telepon_anggota
+                'alamat_anggota'=> $alamat_anggota,
+                'nomor_telepon_anggota'=> $nomor_telepon_anggota,
+                'email_anggota'=> $user->email
             ]);
-            $logging = LogAnggotaSuccess::create([
-                'nis_anggota'=> $nis_anggota,
-                'user_id'=> Auth::id(),
-                'activity' => 'Create Data'
-            ]);
+            //$logging = LogAnggotaSuccess::create([
+            //   'id_anggota'=> $id_anggota,
+            //    'user_id'=> Auth::id(),
+            //    'activity' => 'Create Data'
+            //]);
 
             return view('anggota.create');
         } catch (Exception $th) {
@@ -142,16 +158,18 @@ class AnggotaController extends Controller
     {
         try {
             $anggota = Anggota::find($id);
-            $anggota->nis_anggota = $request->nis_anggota;
+            $anggota->nis_anggota = $anggota->nis_anggota;
             $anggota->nama_anggota = $request->nama_anggota;
             $anggota->alamat_anggota = $request->alamat_anggota;
             $anggota->nomor_telepon_anggota = $request->nomor_telepon_anggota;
+            $anggota->email_anggota = $request->email_anggota;
+            $anggota->tahun_ajaran = $request->tahun_ajaran;
             $anggota->save();
-            $logging = LogAnggotaSuccess::create([
-                'nis_anggota'=> $nis_anggota,
-                'user_id' => Auth::id(),
-                'activity' => 'Update Data'
-            ]);
+            //$logging = LogAnggotaSuccess::create([
+            //    'id_anggota'=> $id_anggota,
+            //    'user_id' => Auth::id(),
+            //    'activity' => 'Update Data'
+            //]);
             return view('anggota.edit', compact('anggota'));
         } catch (Exception $th) {
             return response()->json([
@@ -170,11 +188,11 @@ class AnggotaController extends Controller
     {
         try {
             $anggota = Anggota::find($id);
-            $logging = LogAnggotaSuccess::create([
-                'nis_anggota'=> $anggota->nis_anggota,
-                'user_id' => Auth::id(),
-                'activity' => 'Delete Data'
-            ]);
+            //$logging = LogAnggotaSuccess::create([
+            //    'id_anggota'=> $anggota->id_anggota,
+            //   'user_id' => Auth::id(),
+            //    'activity' => 'Delete Data'
+            //]);
             $anggota->delete();
             return redirect('/anggota');
         } catch (Extection $th) {

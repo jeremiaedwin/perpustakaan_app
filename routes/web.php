@@ -2,7 +2,7 @@
 
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\DataBukuController;
-use App\Http\Controllers\TestQueueEmailsController;
+
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -44,4 +44,3 @@ Auth::routes();
 Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
 	
 Route::get('/rekap', [App\Http\Controllers\RekapController::class, 'makeRekap']);
-Route::get('/sending-queue-emails', [TestQueueEmailsController::class,'sendTestEmails']);

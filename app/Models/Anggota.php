@@ -11,9 +11,13 @@ class Anggota extends Model
     protected $table = 'anggotas';
     protected $fillable = [
         'nis_anggota',
+        'id_user',
         'nama_anggota',
         'alamat_anggota',
-        'nomor_telepon_anggota'
+        'nomor_telepon_anggota',
+        'email_anggota',
+        'tahun_ajaran',
+        'status_anggota'
     ];
     protected $primaryKey = 'nis_anggota';
     protected $keyType = 'string';

@@ -13,7 +13,7 @@
             <div class="col-12">
                 <div class="card">
                     <div class="card-body">
-    
+
                     <div class="form-group">
                         <label for="">NIS Anggota</label>
                         <input type="text" name="nis_anggota" class="form-control">
@@ -34,6 +34,9 @@
                         <input type="text" name="nomor_telepon_anggota" class="form-control">
                     </div>
 
+                    <div class="form-group">
+                        <label for="">Email Anggota</label>
+                        <input type="text" name="email_anggota" class="form-control">
                     </div>
 
                     <div class="card-footer">

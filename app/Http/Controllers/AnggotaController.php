@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Response;
 use App\Models\Anggota;
 use App\Models\User;
 use App\Models\LogAnggotaSuccess;
@@ -199,6 +200,58 @@ class AnggotaController extends Controller
             return response()->json([
                 'message' => $th
             ], 400);
+        }
+    }
+
+    public function search(Request $request, $id){
+        if($request->ajax()){
+            
+            $output="";
+                if($id != null){
+                    $anggota = Anggota::where('nis_anggota', 'like', '%' . $id . '%')->get();
+                    if($anggota)
+                    {
+                        foreach($anggota as $anggota){
+                            $output .= '
+                            <tr>
+                            <td>'  . 'Nis Anggota' . '</td>
+                            <td>'  . $anggota->nis_anggota . '</td>
+                            </tr>
+                            <tr>
+                            <td>'  . 'Nama Anggota' . '</td>
+                            <td>'  . $anggota->nama_anggota . '</td>
+                            <td><input type="hidden" name="kode_anggota" value="'. $anggota->nis_anggota .'"</input> </td>
+                            </tr>
+                            ';
+                        }
+                        $data = array(
+                            'table_data' => $output
+                        );
+                        return Response::json($data);
+                    }else{
+                        $output .= '
+                        <tr>
+                            <td>' . 'data not found' . '</td>
+                        </tr>
+                        ';
+                        $data = array(
+                            'table_data' => $output
+                        );
+                        return Response::json($data);
+                    }
+                }else{
+                    $output .= '
+                        <tr>
+                        <td>' . '' . '</td>
+                        </tr>
+                        ';
+                        $data = array(
+                            'table_data' => $output
+                        );
+                        return Response::json($data);
+                }
+
+            
         }
     }
 }

@@ -208,7 +208,7 @@ class AnggotaController extends Controller
             
             $output="";
                 if($id != null){
-                    $anggota = Anggota::where('nis_anggota', 'like', '%' . $id . '%')->get();
+                    $anggota = Anggota::where('nis_anggota', 'like', '%' . $id . '%')->where('status_anggota', '=', 'aktif')->get();
                     if($anggota)
                     {
                         foreach($anggota as $anggota){

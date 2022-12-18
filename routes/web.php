@@ -2,7 +2,8 @@
 
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\DataBukuController;
-use App\Http\Controllers\TestQueueEmailsController;
+use App\Http\Controllers\AnggotaController;
+
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -26,12 +27,18 @@ Route::group(['middleware' => ['role:admin']], function () {
     Route::resource('peminjaman', \App\Http\Controllers\PeminjamanController::class)->middleware('auth');
     Route::resource('pengembalian', \App\Http\Controllers\PengembalianController::class)->middleware('auth');
     Route::resource('anggota', \App\Http\Controllers\AnggotaController::class);
+    Route::get('/anggota/search/{id}', [AnggotaController::class, 'search']);
+    Route::get('/buku/search/{id}', [DataBukuController::class, 'search']);
     Route::get('/data_buku', [DataBukuController::class, 'index']);
     Route::get('/data_buku/create', [DataBukuController::class, 'create']);
     Route::post('/data_buku', [DataBukuController::class, 'store']);
     Route::get('/data_buku/{id}/edit', [DataBukuController::class, 'edit']);
     Route::put('/data_buku/{id}', [DataBukuController::class, 'update']);
     Route::delete('/data_buku/{id}', [DataBukuController::class, 'destroy']);
+});
+
+Route::group(['middleware' => ['role:anggota']], function () {
+    Route::get('/riwayat-peminjaman', [App\Http\Controllers\RekapController::class, 'RekapRiwayatPeminjaman']);
 });
     
 
@@ -44,4 +51,3 @@ Auth::routes();
 Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
 	
 Route::get('/rekap', [App\Http\Controllers\RekapController::class, 'makeRekap']);
-Route::get('/sending-queue-emails', [TestQueueEmailsController::class,'sendTestEmails']);

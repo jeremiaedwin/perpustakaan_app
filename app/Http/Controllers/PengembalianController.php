@@ -32,7 +32,8 @@ class PengembalianController extends Controller
             return view('pengembalian.index');
         } catch (\Throwable $e) {
             \LogPengembalianErrorsActivity::addToLog(json_encode($e->getMessage()), '500', 'Get All', ' ');
-            dd($e->getMessage());
+            Alert::error('Error', $e->getMessage());
+            return back();
         }
     }
 
@@ -73,7 +74,8 @@ class PengembalianController extends Controller
             return redirect('/pengembalian');
         } catch (Throwable $e) {
             \LogPengembalianErrorsActivity::addToLog(json_encode($e->getMessage()), 'Create Data', $request->kode_peminjaman);
-            dd($e->getMessage());
+            Alert::error('Error', $e->getMessage());
+            return back();
         }
     }
 
@@ -85,9 +87,8 @@ class PengembalianController extends Controller
             $buku->save();
         } catch (\Throwable $th) {
             \LogPeminjamanErrorsActivity::addToLog(json_encode($e->getMessage()), '500', 'Insert', '-');
-            return response()->json([
-                'message' => $e->getMessage()
-            ], 500);
+            Alert::error('Error', $e->getMessage());
+            return back();
         }
     }
 

@@ -3,7 +3,6 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Response;
 use App\Models\Anggota;
 use App\Models\User;
 use App\Models\LogAnggotaSuccess;
@@ -90,7 +89,6 @@ class AnggotaController extends Controller
         try {
             $user = User::create([
                 'name' => $nama_anggota,
-                'email' => $email,
                 'password' => bcrypt('12345678')
             ]);
             $user->assignRole('anggota');

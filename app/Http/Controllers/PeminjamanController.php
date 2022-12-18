@@ -66,7 +66,8 @@ class PeminjamanController extends Controller
             
         } catch (\Throwable $ex) {
             \LogPeminjamanErrorsActivity::addToLog(json_encode($ex->getMessage()), '500', 'Get All', ' ');
-            dd('message : '. $ex->getMessage());
+            Alert::error('Error', $e->getMessage());
+            return back();
         }
         return view('peminjaman.index');
     }
@@ -146,9 +147,8 @@ class PeminjamanController extends Controller
             
         } catch (Exception $e) {
             \LogPeminjamanErrorsActivity::addToLog(json_encode($e->getMessage()), '500', 'Insert', '-');
-            return response()->json([
-                'message' => $e->getMessage()
-            ], 500);
+            Alert::error('Error', $e->getMessage());
+            return back();
         }
     }
 
@@ -160,9 +160,8 @@ class PeminjamanController extends Controller
             $buku->save();
         } catch (\Throwable $th) {
             \LogPeminjamanErrorsActivity::addToLog(json_encode($e->getMessage()), '500', 'Insert', '-');
-            return response()->json([
-                'message' => $e->getMessage()
-            ], 500);
+            Alert::error('Error', $e->getMessage());
+            return back();
         }
     }
 
@@ -180,7 +179,8 @@ class PeminjamanController extends Controller
             return view('peminjaman.show', compact('peminjaman', 'hari', 'telah_kembali'));
         }catch (Exception $e) {
             \LogPeminjamanErrorsActivity::addToLog(json_encode($e->getMessage()), '500', 'Show', $id);
-            return abort(500);
+            Alert::error('Error', $e->getMessage());
+            return back();
         }
     }
 

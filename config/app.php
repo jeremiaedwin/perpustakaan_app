@@ -231,6 +231,8 @@ return [
         'LogPeminjamanErrorsActivity' => App\Helpers\LogPeminjamanErrorsActivity::class,
         'LogPengembalianSuccessActivity' => App\Helpers\LogPengembalianSuccessActivity::class,
         'LogPengembalianErrorsActivity' => App\Helpers\LogPengembalianErrorsActivity::class,
+        'LogDataBukuSuccessActivity' => App\Helpers\LogDataBukuSuccessActivity::class,
+        'LogDataBukuErrorsActivity' => App\Helpers\LogDataBukuErrorsActivity::class,
     ],
 
 ];

@@ -29,9 +29,18 @@ class DataBukuController extends Controller
     public function index()
     {
         $data_buku = DataBuku::all();
-        return view('data_buku.index', [
-            'data_buku' => $data_buku
-        ]);
+        try{
+            \LogDataBukuSuccessActivity::addToLog('Berhasil Menampilkan Seluruh Data Buku.', '200', 'Get All', ' ');
+            return view('data_buku.index', [
+                'data_buku' => $data_buku
+            ]);
+        }
+        catch(Throwable $ex){
+            \LogDataBukuErrorsActivity::addToLog(json_encode($ex->getMessage()), '500', 'Get All', ' ');
+            dd('message : '. $ex->getMessage());
+        }
+        
+        
     }
 
     /**
@@ -56,6 +65,10 @@ class DataBukuController extends Controller
         $kategori_list = ['Kelas 1', 'Kelas 2', 'Kelas 3', 'Kelas 4', 'Kelas 5', 'Kelas 6', 'Umum'];
         $topik_list = ['Matematika', 'Seni Budaya', 'IPA', 'IPS', 'PJOK', 'Bahasa Inggris', 'Bahasa Indonesia', 'Novel', 'Sains', 'Sejarah']; 
         
+        if($request->jumlah_stok < 0){
+
+        }
+
         $judul_buku = $request->judul_buku;
         $penerbit_buku = $request->penerbit_buku;
         $penulis_buku = $request->penulis_buku;
@@ -96,10 +109,12 @@ class DataBukuController extends Controller
                 'jumlah_stok' => $jumlah_stok,
                 'jumlah_tersedia' => $jumlah_tersedia
             ]);
-
+            
+            \LogDataBukuSuccessActivity::addToLog('Data Berhasil Ditambahkan.', '200', 'Insert', $id_buku);
             return redirect('data_buku/create');
 
         } catch (Exception $th) {
+            \LogDataBukuErrorsActivity::addToLog(json_encode($th->getMessage()), '500', 'Insert', '-');
             return response()->json([
                 'message' => $th
             ], 400);
@@ -154,15 +169,14 @@ class DataBukuController extends Controller
             $data_buku->judul_buku = $request->judul_buku;
             $data_buku->penerbit_buku = $request->penerbit_buku;
             $data_buku->penulis_buku = $request->penulis_buku;
-            $data_buku->kategori = $request->kategori;
-            $data_buku->topik = $request->topik; 
-            $data_buku->jumlah_stok = $request->jumlah_stok;
-            $data_buku->jumlah_tersedia = $request->jumlah_stok;
             $data_buku->save();
+
+            \LogDataBukuSuccessActivity::addToLog('Data Berhasil Diubah.', '200', 'Update', $id);
 
             return redirect('/data_buku');
             
         } catch (Exception $th) {
+            \LogDataBukuErrorsActivity::addToLog(json_encode($th->getMessage()), '500', 'Update', '-');
             return response()->json([
                 'message' => $th
             ], 400);
@@ -180,8 +194,10 @@ class DataBukuController extends Controller
         try {
             $data_buku = DataBuku::find($id);
             $data_buku->delete();
+            \LogDataBukuSuccessActivity::addToLog('Data Berhasil Diubah.', '200', 'Delete', $id);
             return redirect('/data_buku');
         } catch (Extection $th) {
+            \LogDataBukuErrorsActivity::addToLog(json_encode($th->getMessage()), '500', 'Delete', '-');
             return response()->json([
                 'message' => $th
             ], 400);
@@ -234,6 +250,9 @@ class DataBukuController extends Controller
                             'table_data' => $output
                         );
                         return Response::json($data);
+                }
+        }
+    }
                 
     public function prefixGenerator($category_id, $topic_id){
         

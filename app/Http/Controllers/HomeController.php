@@ -27,14 +27,18 @@ class HomeController extends Controller
     public function index()
     {
         $profil = Anggota::where('id_user', '=', Auth::id())->first();
-        $kode_anggota = $profil->nis_anggota;
-        $peminjaman = Peminjaman::leftJoin('pengembalian', 'peminjaman.kode_peminjaman', '=', 'pengembalian.kode_peminjaman')
-                        ->where('peminjaman.kode_anggota', '=', $kode_anggota)->get();
-        $peminjamanTelahSelesai = Peminjaman::join('pengembalian', 'peminjaman.kode_peminjaman', '=', 'pengembalian.kode_peminjaman')->where('peminjaman.kode_anggota', '=', $kode_anggota)->get();
-        $peminjamanBelumSelesai = Peminjaman::leftJoin('pengembalian', 'peminjaman.kode_peminjaman', '=', 'pengembalian.kode_peminjaman')
-                                    ->where('pengembalian.tanggal_pengembalian', '=' , null)
-                                    ->where('peminjaman.kode_anggota', '=', $kode_anggota)
-                                    ->get();
-        return view('home', compact('profil', 'peminjaman', 'peminjamanTelahSelesai', 'peminjamanBelumSelesai'));
+        if($profil){
+            $kode_anggota = $profil->nis_anggota;
+            $peminjaman = Peminjaman::leftJoin('pengembalian', 'peminjaman.kode_peminjaman', '=', 'pengembalian.kode_peminjaman')
+                            ->where('peminjaman.kode_anggota', '=', $kode_anggota)->get();
+            $peminjamanTelahSelesai = Peminjaman::join('pengembalian', 'peminjaman.kode_peminjaman', '=', 'pengembalian.kode_peminjaman')->where('peminjaman.kode_anggota', '=', $kode_anggota)->get();
+            $peminjamanBelumSelesai = Peminjaman::leftJoin('pengembalian', 'peminjaman.kode_peminjaman', '=', 'pengembalian.kode_peminjaman')
+                                        ->where('pengembalian.tanggal_pengembalian', '=' , null)
+                                        ->where('peminjaman.kode_anggota', '=', $kode_anggota)
+                                        ->get();
+            return view('home', compact('profil', 'peminjaman', 'peminjamanTelahSelesai', 'peminjamanBelumSelesai'));
+        } else{
+            return view('home');
+        }
     }
 }

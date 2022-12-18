@@ -5,6 +5,8 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\DataBuku;
 use Illuminate\Support\Facades\DB;
+use Haruncpi\LaravelIdGenerator\IdGenerator;
+use Illuminate\Support\Facades\Response;
 
 use Auth;
 use DataTables;
@@ -13,8 +15,7 @@ use Throwable;
 use Error;
 use Alert;
 use Carbon;
-use Haruncpi\LaravelIdGenerator\IdGenerator;
-use Illuminate\Support\Facades\Response;
+
 
 class DataBukuController extends Controller
 {

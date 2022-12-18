@@ -10,7 +10,7 @@ class LogPeminjamanErrorsActivity
 {
 
 
-    public static function addToLog($message, $status, $action, $kode_peminjaman)
+    public static function addToLog($message, $status, $action, $id_buku)
     {
     	$log = [];
     	$log['kode_peminjaman'] = $kode_peminjaman;

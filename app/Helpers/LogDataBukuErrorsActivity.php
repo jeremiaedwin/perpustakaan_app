@@ -7,7 +7,7 @@ use App\Models\LogDataBukuError;
 class LogDataBukuErrorsActivity{
     public static function addToLog($message, $status, $action, $id_buku){
         $log = [];
-    	$log['kode_peminjaman'] = $id_buku;
+    	$log['id_buku'] = $id_buku;
     	$log['message'] = $message;
     	$log['status'] = $status;
     	$log['url'] = Request::fullUrl();

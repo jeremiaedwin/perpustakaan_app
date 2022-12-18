@@ -15,17 +15,21 @@
                     <a href="{{route('anggota.create')}}" class="btn btn-primary mb-2">
                         Tambah
                     </a>
+                    
+                    <a href="/rekap" class="btn btn-primary mb-2">
+                        <i class="fa fa-file" aria-hidden="true"></i> LAPORAN
+                    </a>
 
                     <table class="table table-hover table-bordered table-stripped anggota_datatable" id="example2">
                         <thead>
                         <tr>
-                            <th>NIS Anggota</th>
-                            <th>Nama Anggota</th>
-                            <th>Alamat Anggota</th>
-                            <th>Nomor Telepon Anggota</th>
-                            <th>Email Anggota</th>
-                            <th>Tahun Ajaran</th>
-                            <th>Status Anggota</th>
+                            <th>NIS</th>
+                            <th>Nama Lengkap</th>
+                            <th>Alamat</th>
+                            <th>No Telepon</th>
+                            <th>Email</th>
+                            <th>Angkatan</th>
+                            <th>Status</th>
                             <th>Action</th>
                         </tr>
                         </thead>

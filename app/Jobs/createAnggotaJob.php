@@ -37,7 +37,7 @@ class createAnggotaJob implements ShouldQueue
     {
         $faker = Faker::create('id_ID');
  
-    	 for($i = 1; $i <= 100; $i++){
+    	 for($i = 1; $i <= 10; $i++){
             $name = $faker->unique()->name;
             $email = str_replace(' ', '', $name).'@gmail.com';
 

@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <title>Laporan Anggota</title>
     <style>
         table.center {
             border: 1px solid black;
@@ -19,44 +19,38 @@
         }
     </style>
 </head>
+
 <body>
-    <center><h1>Laporan Peminjaman</h1></center>
+    <center><h1>Laporan Anggota</h1></center>
     <table>
         <tr>
-            <td>Total Peminjaman</td>
+            <td>NIS</td>
             <td>:</td>
-            <td>{{$peminjamanTotal}}</td>
+            <td>{{$nis_anggota}}</td>
         </tr>
+
         <tr>
-            <td>Peminjaman Telah Selesai</td>
+            <td>Nama</td>
             <td>:</td>
-            <td>{{$peminjamanTelahSelesai}}</td>
-        </tr>
-        <tr>
-            <td>Peminjaman Belum Selesai</td>
-            <td>:</td>
-            <td>{{$peminjamanBelumSelesai}}</td>
+            <td>{{$nama_anggota}}</td>
         </tr>
     </table>
+    
     <br>
     <table class="center">
         <thead>
             <tr>
                 <th>No.</th>
-                <th>Nama Peminjam</th>
-                <th>Judul Buku</th>
-                <th>Tanggal Peminjaman</th>
-                <th>Tanggal Pengembalian</th>
+                <th>NIS</th>
+                <th>Nama</th>
             </tr>
         </thead>
+
         <tbody>
-            @foreach($peminjaman as $pm)
+            @foreach($anggota as $a)
             <tr>
-                <td>{{$pm->kode_peminjaman}}</td>
-                <td>{{$pm->nama_anggota}}</td>
-                <td>{{$pm->judul_buku}}</td>
-                <td>{{$pm->tanggal_peminjaman}}</td>
-                <td>{{$pm->tanggal_pengembalian}}</td>
+                <td>{{$a->nis_anggota}}</td>
+                <td>{{$a->nama_anggota}}</td>
             </tr>
             @endforeach
         </tbody>

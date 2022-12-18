@@ -51,7 +51,7 @@ class RekapController extends Controller
 
     public function rekapAnggota() {
 
-        $documentFileName = "rekap.pdf";
+        $documentFileName = "LaporanAnggota.pdf";
         $peminjaman = Anggota::join('transaksi','transaksi.id_anggota', '=', 'anggotas.id_anggota')
         ->join('data_buku', 'transaksi.id_buku', '=', 'data_buku.id_buku')
         ->get();
@@ -71,13 +71,8 @@ class RekapController extends Controller
             'Content-Type' => 'application/pdf',
             'Content-Disposition' => 'inline; filename="'.$documentFileName.'"'
         ];
-
-        // $document->WriteHTML("Total Peminjaman : $peminjamanTotal");
-        // $document->WriteHTML("Peminjaman telah selesai : $peminjamanTelahSelesai");
-        // $document->WriteHTML("Peminjaman belum selesai : $peminjamanBelumSelesai");
-
         	
-        $document->WriteHTML(view('rekap.index', compact('peminjaman', 'peminjamanTotal', 'peminjamanTelahSelesai', 'peminjamanBelumSelesai')));
+        $document->WriteHTML(view('rekapAnggota.index', compact('peminjaman', 'peminjamanTotal', 'peminjamanTelahSelesai', 'peminjamanBelumSelesai')));
 
         Storage::disk('public')->put($documentFileName, $document->Output($documentFileName, "S"));
         return Storage::disk('public')->download($documentFileName, 'Request', $header);

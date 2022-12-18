@@ -33,7 +33,7 @@
                         </thead>
                         <tbody>
                         @php 
-                        $no =0  
+                        $no =1  
                         @endphp
                         @foreach($data_buku as $a)
                             <tr>

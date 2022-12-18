@@ -73,10 +73,18 @@ $(document).ready(function(){
    data:{query:query},
    success:function(data)
    {
-    $('#dataAnggota').html(data.table_data);
+    if(data){
+        $('#dataAnggota').html(data.table_data);
+    }else if (data===null){
+        $('#dataAnggota').html("Data Not Found");
+    }
    },
    error: function(xhr, status, error) {
       console.log(status, error);
+      if(status == "error"){
+
+          $('#dataAnggota').html("Anggota Tidak Ditemukan");
+      }
    },
   })
  }

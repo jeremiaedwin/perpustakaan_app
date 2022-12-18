@@ -189,51 +189,52 @@ class DataBukuController extends Controller
     }
 
     public function search(Request $request, $id){
-        if($request->ajax()){
-            
-            $output="";
-                if($id != null){
-                    $buku = DataBuku::where('id_buku', 'like', '%' . $id . '%')->get();
-                    if($buku)
-                    {
-                        foreach($buku as $buku){
-                            $output .= '
-                            <tr>
-                            <td>'  . 'Kode Buku' . '</td>
-                            <td>'  . $buku->id_buku . '</td>
-                            </tr>
-                            <tr>
-                            <td>'  . 'Judul Buku' . '</td>
-                            <td>'  . $buku->judul_buku . '</td>
-                            <td><input type="hidden" name="kode_buku" value="'. $buku->id_buku .'"</input> </td>
-                            </tr>
-                            ';
-                        }
-                        $data = array(
-                            'table_data' => $output
-                        );
-                        return Response::json($data);
-                    }else{
+    if($request->ajax()){
+        
+        $output="";
+            if($id != null){
+                $buku = DataBuku::where('id_buku', 'like', '%' . $id . '%')->first();
+                if($buku)
+                {
                         $output .= '
                         <tr>
-                            <td>' . 'data not found' . '</td>
+                        <td>'  . 'Kode Buku' . '</td>
+                        <td>'  . $buku->id_buku . '</td>
+                        </tr>
+                        <tr>
+                        <td>'  . 'Judul Buku' . '</td>
+                        <td>'  . $buku->judul_buku . '</td>
+                        <td><input type="hidden" name="kode_buku" value="'. $buku->id_buku .'"</input> </td>
                         </tr>
                         ';
-                        $data = array(
-                            'table_data' => $output
-                        );
-                        return Response::json($data);
-                    }
+                    $data = array(
+                        'table_data' => $output
+                    );
+                    return Response::json($data);
                 }else{
                     $output .= '
-                        <tr>
-                        <td>' . '' . '</td>
-                        </tr>
-                        ';
-                        $data = array(
-                            'table_data' => $output
-                        );
-                        return Response::json($data);
+                    <tr>
+                        <td>' . 'Buku Tidak Ditemukan' . '</td>
+                    </tr>
+                    ';
+                    $data = array(
+                        'table_data' => $output
+                    );
+                    return Response::json($data);
+                }
+            }else{
+                $output .= '
+                    <tr>
+                    <td>' . '' . '</td>
+                    </tr>
+                    ';
+                    $data = array(
+                        'table_data' => $output
+                    );
+                    return Response::json($data);
+                }
+            }
+        }
                 
     public function prefixGenerator($category_id, $topic_id){
         

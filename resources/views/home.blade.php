@@ -87,7 +87,7 @@
                                         <div id="collapseOne" class="collapse" aria-labelledby="headingOne" data-parent="#accordion">
                                             <table class="table">
                                                 <thead>
-                                                    <th>Judul</th>
+                                                    <th>Judul Buku</th>
                                                     <th>Tanggal Peminjaman</th>
                                                     <th>Tanggal Pengembalian</th>
                                                 </thead>
@@ -95,8 +95,8 @@
                                                     @foreach($peminjaman as $peminjaman)
                                                     <tr>
                                                         @if($peminjaman->tanggal_pengembalian != null)
-                                                        <th>{{$peminjaman->buku->judul_buku}}</th>
-                                                        <th>{{date('j F, Y', strtotime($peminjaman->tanggal_peminjaman))}}</th>
+                                                        <td>{{$peminjaman->buku->judul_buku}}</td>
+                                                        <td>{{date('j F, Y', strtotime($peminjaman->tanggal_peminjaman))}}</td>
                                                             <td>{{date('j F, Y', strtotime($peminjaman->pengembalian->tanggal_pengembalian))}}</td>
                                                             <td>{{''}}</td>
                                                         @endif
@@ -117,7 +117,7 @@
                                         <div id="collapseTwo" class="collapse show" aria-labelledby="headingTwo" data-parent="#accordion">
                                             <table class="table">
                                                 <thead>
-                                                    <th>Judul</th>
+                                                    <th>Judul Buku</th>
                                                     <th>Tanggal Peminjaman</th>
                                                     <th>Tenggat Waktu</th>
                                                 </thead>

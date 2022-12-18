@@ -71,11 +71,11 @@ class PengembalianController extends Controller
             
             \LogPengembalianSuccessActivity::addToLog('Berhasil Menambahkan Data.', '200', 'Create Data', $request->kode_peminjaman);
             Alert::success('Success', 'Data Berhasil Dibuat');
-            return redirect('/pengembalian');
+            return redirect('/peminjaman'); 
         } catch (Throwable $e) {
             \LogPengembalianErrorsActivity::addToLog(json_encode($e->getMessage()), 'Create Data', $request->kode_peminjaman);
             Alert::error('Error', $e->getMessage());
-            return back();
+            return redirect('/peminjaman'); 
         }
     }
 

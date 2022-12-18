@@ -5,6 +5,15 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\DataBuku;
 use Illuminate\Support\Facades\DB;
+
+use Auth;
+use DataTables;
+use Exception;
+use Throwable;
+use Error;
+use Alert;
+use Carbon;
+use Haruncpi\LaravelIdGenerator\IdGenerator;
 use Illuminate\Support\Facades\Response;
 
 class DataBukuController extends Controller
@@ -12,7 +21,10 @@ class DataBukuController extends Controller
     /**
      * Display a listing of the resource.
      *
+     * @param Request $request
+     * 
      * @return \Illuminate\Http\Response
+     * 
      */
     public function index()
     {
@@ -32,16 +44,18 @@ class DataBukuController extends Controller
     {
         return view("data_buku.create");
     }
-
     /**
      * Store a newly created resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    
+     public function store(Request $request)
     {
-        $id_buku = $request->id_buku;
+        $kategori_list = ['Kelas 1', 'Kelas 2', 'Kelas 3', 'Kelas 4', 'Kelas 5', 'Kelas 6', 'Umum'];
+        $topik_list = ['Matematika', 'Seni Budaya', 'IPA', 'IPS', 'PJOK', 'Bahasa Inggris', 'Bahasa Indonesia', 'Novel', 'Sains', 'Sejarah']; 
+        
         $judul_buku = $request->judul_buku;
         $penerbit_buku = $request->penerbit_buku;
         $penulis_buku = $request->penulis_buku;
@@ -51,6 +65,27 @@ class DataBukuController extends Controller
         $jumlah_tersedia = $jumlah_stok;
 
         try {
+            /*
+            $validated = $request->validate([
+                'id_buku' => 'required',
+                'judul_buku' => 'required',
+                'penerbit_buku' => 'required',
+                'penulis_buku' => 'required',
+                'kategori' => 'required',
+                'topik' => 'required',
+                'jumlah_stok' => 'required',
+            ]);*/
+            
+            $id = IdGenerator::generate([
+                'table' => 'data_buku', 
+                'field'=> 'id_buku',
+                'length' => 15, 
+                //'prefix' => 'BK',
+                'reset_on_prefix_change' => true,
+                'prefix' => $this->prefixGenerator(array_search($kategori, $kategori_list), array_search($topik, $topik_list)) . date('y') . '-'
+            ]);
+            $id_buku = $id;
+
             $data_buku = DataBuku::create([
                 'id_buku' => $id_buku,
                 'judul_buku' => $judul_buku,
@@ -61,12 +96,17 @@ class DataBukuController extends Controller
                 'jumlah_stok' => $jumlah_stok,
                 'jumlah_tersedia' => $jumlah_tersedia
             ]);
-            return redirect('/data_buku');
+
+            return redirect('data_buku/create');
+
         } catch (Exception $th) {
             return response()->json([
                 'message' => $th
             ], 400);
         }
+
+        
+        
     }
 
     /**
@@ -75,9 +115,9 @@ class DataBukuController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function show($id)
+    public function show(Request $request, $id)
     {
-        //
+        //$value = $request->session()->get('key', 'default');
     }
     
 
@@ -119,7 +159,9 @@ class DataBukuController extends Controller
             $data_buku->jumlah_stok = $request->jumlah_stok;
             $data_buku->jumlah_tersedia = $request->jumlah_stok;
             $data_buku->save();
+
             return redirect('/data_buku');
+            
         } catch (Exception $th) {
             return response()->json([
                 'message' => $th
@@ -192,9 +234,14 @@ class DataBukuController extends Controller
                             'table_data' => $output
                         );
                         return Response::json($data);
-                }
+                
+    public function prefixGenerator($category_id, $topic_id){
+        
+        $kategori_tag = ['01', '02', '03', '04', '05', '06', 'UM'];
+        $topic_tag = ['MTK', 'SBD', 'IPA', 'IPS', 'OLG', 'ING', 'IND', 'NOV', 'SAI', 'SEJ'];
 
-            
-        }
+        $prefix = 'BK' . '-' . $kategori_tag[$category_id] . '-'. $topic_tag[$topic_id] . '-'; 
+
+        return $prefix;
     }
 }

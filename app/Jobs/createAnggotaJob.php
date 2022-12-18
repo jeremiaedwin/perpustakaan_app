@@ -37,7 +37,7 @@ class createAnggotaJob implements ShouldQueue
     {
         $faker = Faker::create('id_ID');
  
-    	 for($i = 1; $i <= 100; $i++){
+    	 for($i = 1; $i <= 10; $i++){
             $name = $faker->unique()->name;
             $email = str_replace(' ', '', $name).'@gmail.com';
 
@@ -46,14 +46,15 @@ class createAnggotaJob implements ShouldQueue
                 'email' => $email,
                 'password' => bcrypt('12345678')
             ]);
+
             $user->assignRole('anggota');
             $user_id = User::where('email', '=', $email)->first();
     		$anggota = member::create([
-    			'nis_anggota' => $faker->numberBetween(10000000,99999999),
+    			'nis_anggota' => $faker->unique()->numberBetween(10000000,99999999),
                 'id_user' => $user_id->id,
     			'nama_anggota' => $name,
     			'alamat_anggota' => $faker->address,
-    			'nomor_telepon_anggota' => $faker->phoneNumber,
+    			'nomor_telepon_anggota' => $faker->unique()->phoneNumber,
                 'email_anggota' => $email,
                 'tahun_ajaran' => intval(Carbon\Carbon::now()->format('Y')),
                 'created_at' => Carbon\Carbon::now(),

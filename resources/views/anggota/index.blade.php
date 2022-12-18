@@ -19,13 +19,13 @@
                     <table class="table table-hover table-bordered table-stripped anggota_datatable" id="example2">
                         <thead>
                         <tr>
-                            <th>NIS Anggota</th>
-                            <th>Nama Anggota</th>
-                            <th>Alamat Anggota</th>
-                            <th>Nomor Telepon Anggota</th>
-                            <th>Email Anggota</th>
-                            <th>Tahun Ajaran</th>
-                            <th>Status Anggota</th>
+                            <th>NIS</th>
+                            <th>Nama Lengkap</th>
+                            <th>Alamat</th>
+                            <th>No Telepon</th>
+                            <th>Email</th>
+                            <th>Angkatan</th>
+                            <th>Status</th>
                             <th>Action</th>
                         </tr>
                         </thead>

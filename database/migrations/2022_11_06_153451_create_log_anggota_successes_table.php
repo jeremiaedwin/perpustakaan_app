@@ -14,7 +14,7 @@ class CreateLogAnggotaSuccessesTable extends Migration
     public function up()
     {
         Schema::create('log_anggota_successes', function (Blueprint $table) {
-            $table->id();
+            //$table->id();
             $table->string('nis_anggota');
             $table->string('user_id');
             $table->string('activity');

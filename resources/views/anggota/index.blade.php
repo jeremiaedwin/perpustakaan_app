@@ -15,10 +15,6 @@
                     <a href="{{route('anggota.create')}}" class="btn btn-primary mb-2">
                         Tambah
                     </a>
-                    
-                    <a href="/rekap" class="btn btn-primary mb-2">
-                        <i class="fa fa-file" aria-hidden="true"></i> LAPORAN
-                    </a>
 
                     <table class="table table-hover table-bordered table-stripped anggota_datatable" id="example2">
                         <thead>

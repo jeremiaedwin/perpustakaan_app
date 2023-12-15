@@ -19,12 +19,13 @@
                     <table class="table table-hover table-bordered table-stripped anggota_datatable" id="example2">
                         <thead>
                         <tr>
-                            <th>ID Anggota</th>
                             <th>NIS Anggota</th>
                             <th>Nama Anggota</th>
                             <th>Alamat Anggota</th>
                             <th>Nomor Telepon Anggota</th>
                             <th>Email Anggota</th>
+                            <th>Tahun Ajaran</th>
+                            <th>Status Anggota</th>
                             <th>Action</th>
                         </tr>
                         </thead>
@@ -47,12 +48,13 @@
         serverSide: true,
         ajax: "{{ route('anggota.index') }}",
         columns: [
-            {data: 'id_anggota', name: 'id_anggota'},
             {data: 'nis_anggota', name: 'nis_anggota'},
             {data: 'nama_anggota', name: 'nama_anggota'},
             {data: 'alamat_anggota', name: 'alamat_anggota'},
             {data: 'nomor_telepon_anggota', name: 'nomor_telepon_anggota'},
             {data: 'email_anggota', name: 'email_anggota'},
+            {data: 'tahun_ajaran', name: 'tahun_ajaran'},
+            {data: 'status_anggota', name: 'status_anggota'},
             {data: 'action', name: 'action', orderable: false, searchable: false},
         ]
     });

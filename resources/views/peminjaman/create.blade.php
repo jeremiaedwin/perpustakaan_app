@@ -16,10 +16,10 @@
 
                         <div class="form-group">
                             <label for="">Anggota : </label>
-                            <select name="kode_peminjam" id="" class="form-control">
+                            <select name="kode_anggota" id="" class="form-control js-example-basic-single" id="select2">
                                 <option value="">Pilih Anggota</option>
                                 @foreach($anggota as $anggota)
-                                <option value="{{$anggota->id_anggota}}">{{$anggota->nama_anggota}}</option>
+                                <option value="{{$anggota->nis_anggota}}">{{$anggota->nama_anggota}}</option>
                                 @endforeach
                             </select>
                         </div>
@@ -35,7 +35,13 @@
                         </div>
                         <div class="form-group">
                             <label for="">Durasi Peminjaman</label>
-                            <input type="number" name="durasi_peminjaman" class="form-control">
+                            <select name="durasi_peminjaman" id="" class="form-control">
+                                <option value="">Pilih Opsi Peminjaman</option>
+                                <option value="7">1 Minggu</option>
+                                <option value="30">1 Bulan</option>
+                                <option value="180">1 Semester</option>
+                                <option value="365">1 Tahun</option>
+                            </select>
                         </div>
                     </div>
 
@@ -51,3 +57,7 @@
             </div>
         </div>
 @stop
+@push('js')
+    
+    
+@endpush

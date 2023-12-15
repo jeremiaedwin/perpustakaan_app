@@ -229,6 +229,8 @@ return [
         'View' => Illuminate\Support\Facades\View::class,
         'LogPeminjamanSuccessActivity' => App\Helpers\LogPeminjamanSuccessActivity::class,
         'LogPeminjamanErrorsActivity' => App\Helpers\LogPeminjamanErrorsActivity::class,
+        'LogPengembalianSuccessActivity' => App\Helpers\LogPengembalianSuccessActivity::class,
+        'LogPengembalianErrorsActivity' => App\Helpers\LogPengembalianErrorsActivity::class,
     ],
 
 ];

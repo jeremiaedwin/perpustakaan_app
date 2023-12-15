@@ -4,7 +4,9 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Anggota;
+use App\Models\User;
 use App\Models\LogAnggotaSuccess;
+use App\Jobs\createAnggotaJob;
 use Auth;
 use Carbon;
 use DataTables;
@@ -18,7 +20,7 @@ class AnggotaController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function index(Request $request)
-    {
+    {   
         $anggota = Anggota::all();
         try {
             $anggota = Anggota::all();
@@ -27,8 +29,8 @@ class AnggotaController extends Controller
                 return Datatables::of($anggota)->addIndexColumn()
                     ->addColumn('action', function($anggota){
                         
-                        $updateButton = '<a href="/anggota/'.$anggota->id_anggota.'/edit" class="edit btn btn-primary btn-sm">Edit</a>';
-                        $deleteButton = '<form action="/anggota/'.$anggota->id_anggota.'" id="delete-form" method="post">
+                        $updateButton = '<a href="/anggota/'.$anggota->nis_anggota.'/edit" class="edit btn btn-primary btn-sm">Edit</a>';
+                        $deleteButton = '<form action="/anggota/'.$anggota->nis_anggota.'" id="delete-form" method="post">
                                         '. method_field('delete') . csrf_field() .'
                                         <button type="submit" class="btn btn-danger btn-xs">Hapus</button>
                                         </form>';
@@ -59,7 +61,10 @@ class AnggotaController extends Controller
      public function create()
     {
         try {
-            return  view('anggota.create');
+            $job = new createAnggotaJob();
+            $this->dispatch($job);
+            return view('anggota.index');
+            //return  view('anggota.create');
         } catch (\Throwable $th) {
             return response()->json([
                 'message' => 'Page Not Found'
@@ -75,22 +80,27 @@ class AnggotaController extends Controller
      */
     public function store(Request $request)
     {
-        $id_anggota = $request->id_anggota;
         $nis_anggota = $request->nis_anggota;
         $nama_anggota = $request->nama_anggota;
         $alamat_anggota = $request->alamat_anggota;
         $nomor_telepon_anggota = $request->nomor_telepon_anggota;
         $email_anggota = $request->email_anggota;
-        $status_anggota = $request->status_anggota;
 
         try {
+            $user = User::create([
+                'name' => $nama_anggota,
+                'email' => $email,
+                'password' => bcrypt('12345678')
+            ]);
+            $user->assignRole('anggota');
+
             $anggota = Anggota::create([
-                'id_anggota'=> $id_anggota,
                 'nis_anggota'=> $nis_anggota,
+                'id_user'=> $user->id,
                 'nama_anggota'=> $nama_anggota,
                 'alamat_anggota'=> $alamat_anggota,
                 'nomor_telepon_anggota'=> $nomor_telepon_anggota,
-                'email_anggota'=> $email_anggota
+                'email_anggota'=> $user->email
             ]);
             //$logging = LogAnggotaSuccess::create([
             //   'id_anggota'=> $id_anggota,
@@ -148,12 +158,12 @@ class AnggotaController extends Controller
     {
         try {
             $anggota = Anggota::find($id);
-            $anggota->id_anggota = $request->id_anggota;
-            $anggota->nis_anggota = $request->nis_anggota;
+            $anggota->nis_anggota = $anggota->nis_anggota;
             $anggota->nama_anggota = $request->nama_anggota;
             $anggota->alamat_anggota = $request->alamat_anggota;
             $anggota->nomor_telepon_anggota = $request->nomor_telepon_anggota;
             $anggota->email_anggota = $request->email_anggota;
+            $anggota->tahun_ajaran = $request->tahun_ajaran;
             $anggota->save();
             //$logging = LogAnggotaSuccess::create([
             //    'id_anggota'=> $id_anggota,

@@ -12,24 +12,23 @@
             <div class="card">
                 <div class="card-body">
 
-                    <a href="{{route('peminjaman.create')}}" class="btn btn-primary mb-2">
-                        Tambah
+                    <a href="{{route('peminjaman.create')}}" class="btn btn-success mb-2">
+                        <i class="fa fa-plus" aria-hidden="true"></i> TAMBAH
                     </a>
                     <a href="/rekap" class="btn btn-primary mb-2">
-                        PDF
+                        <i class="fa fa-file" aria-hidden="true"></i> LAPORAN
                     </a>
 
                     <table class="table table-hover table-bordered table-stripped peminjaman_datatable" id="example2">
                         <thead>
                         <tr>
-                            <th>No.</th>
+                            <th>Kode</th>
                             <th>Nama Peminjam</th>
                             <th>Judul Buku</th>
                             <th>Tanggal Peminjaman</th>
                             <th>Tenggat Waktu</th>
-                            <th>Tanggal Pengembalian</th>
-                            <th>Status</th>
                             <th>Action</th>
+                            <th></th>
                         </tr>
                         </thead>
                         <tbody>
@@ -56,9 +55,8 @@
             {data: 'judul_buku', name: 'judul_buku'},
             {data: 'tanggal_peminjaman', name: 'tanggal_peminjaman'},
             {data: 'tenggat_waktu', name: 'tenggat_waktu'},
-            {data: 'tanggal_pengembalian', name: 'tanggal_pengembalian'},
-            {data: 'status', name: 'status'},
             {data: 'action', name: 'action', orderable: false, searchable: false},
+            {data: 'detail_button', name: 'detail_button', orderable: false, searchable: false},
         ]
     });
   });

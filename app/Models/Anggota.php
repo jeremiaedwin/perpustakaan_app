@@ -10,14 +10,20 @@ class Anggota extends Model
     use HasFactory;
     protected $table = 'anggotas';
     protected $fillable = [
-        'id_anggota',
         'nis_anggota',
+        'id_user',
         'nama_anggota',
         'alamat_anggota',
         'nomor_telepon_anggota',
         'email_anggota',
+        'tahun_ajaran',
         'status_anggota'
     ];
-    protected $primaryKey = 'id_anggota';
+    protected $primaryKey = 'nis_anggota';
     protected $keyType = 'string';
+
+    public function peminjaman()
+    {
+        return $this->hasMany(Peminjaman::class, 'nis_anggota');
+    }
 }

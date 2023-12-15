@@ -18,8 +18,23 @@
                 @if(!config('adminlte.sidebar_nav_accordion'))
                     data-accordion="false"
                 @endif>
-                {{-- Configured sidebar links --}}
-                @each('adminlte::partials.sidebar.menu-item', $adminlte->menu('sidebar'), 'item')
+                <li class="nav-item">
+                @can('get all peminjaman', Peminjaman::class)
+                    <a href="/peminjaman" class="nav-link"><i class="fa fa-sticky-note"></i>  Peminjaman</a>
+                @endcan
+                
+                
+                </li>
+                <li class="nav-item">
+                @can('get buku', DataBuku::class)
+                    <a href="/anggota" class="nav-link"><i class="fa fa-user"></i>  Anggota</a>
+                @endcan
+                </li>
+                <li class="nav-item">
+                @can('get anggota', Anggota::class)
+                    <a href="/data_buku" class="nav-link"><i class="fa fa-book"></i>  Buku</a>
+                @endcan
+                </li>
             </ul>
         </nav>
     </div>

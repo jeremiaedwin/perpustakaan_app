@@ -14,12 +14,6 @@
             <div class="col-12">
                 <div class="card">
                     <div class="card-body">
-                        
-                        <div class="form-group">
-                            <label for="exampleInputName">ID Anggota</label>
-                            <input disabled type="text" class="form-control @error('id_anggota') is-invalid @enderror" id="exampleInputName" placeholder="id anggota" name="id_anggota" value="{{$anggota->id_anggota}}">
-                            @error('nis_anggota') <span class="text-danger">{{$message}}</span> @enderror
-                        </div>
 
                         <div class="form-group">
                             <label for="exampleInputName">NIS Anggota</label>
@@ -45,7 +39,12 @@
                         <div class="form-group">
                             <label for="">Email Anggota</label>
                             <input type="text" name="email_anggota" id="" value="{{$anggota->email_anggota}}" class="form-control">
-                        </div> 
+                        </div>
+
+                        <div class="form-group">
+                            <label for="">Tahun Ajaran</label>
+                            <input type="text" name="tahun_ajaran" id="" value="{{$anggota->tahun_ajaran}}" class="form-control">
+                        </div>
 
                     </div>
 
